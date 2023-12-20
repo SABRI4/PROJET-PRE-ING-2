@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Vérifier si le fichier CSV est fourni en argument
+
+
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <csv_file>"
+    exit 1
+fi
+exec_timestart_l=$(date +%s.%N)
+csv_file="$1"
+
+# Extraction des ID et de la distance totale parcourue
+awk -F ';' '{ sum[$1] += $5 } END { for (i in sum) prin>    sort -nr | head -n 10 > "ID_Trajet_distance.txt"
+
+# Afficher le contenu du fichier temporaire
+echo "Contenu du fichier ID_Trajet_distance.txt :"
+echo "Distance  |  ID_Trajet "
+cat "ID_Trajet_distance.txt"
+
+exec_timeend_l=$(date +%s.%N)
+exec_timetotal_l=$(echo "$exec_timeend_l - $exec_timest>
+
+echo "Temps d'exécution total du script : $exec_timetot>
+
+exit 0
