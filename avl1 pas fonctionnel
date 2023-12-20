@@ -1,0 +1,192 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct node {
+
+char data[50];
+int occ;
+int bal;
+int asc;
+struct node *fd;
+struct node *fg;
+}node;
+
+int bal1(node *avl) {
+if (avl= NULL) {
+return 0;
+}
+return avl->bal;
+}
+
+int getAsci(char *data) {
+int r = 0;
+for (int i = 0; data[i] != '\0'; i++) {
+r = (r << 8) | data[i];
+}
+return r;
+
+}
+
+int max(int a, int b) {
+if (a > b) {
+return a;
+}
+else {
+return b;
+} 
+}
+
+node *newNode(char *data1) {
+struct node *avl = malloc(sizeof(node));
+avl->occ = 1;
+avl->bal = 1;
+avl->asc = getAsci(data1);
+printf("GENERATED %s ASCII : %d\n", data1, avl->asc);
+avl->fd = NULL;
+avl->fg = NULL;
+strcpy(avl->data, data1);
+if (avl != NULL) {
+return avl;
+}
+}
+
+node *rightRotate(node *y) {
+node *x = y->fg;
+node *T2 = x->fd;
+
+x->fd = y;
+y->fg = T2;
+
+y->bal = max(bal1(y->fg), bal1(y->fd)) + 1;
+x->bal = max(bal1(x->fg), bal1(x->fd)) + 1;
+
+return x;
+
+}
+
+node *leftRotate(node *x) {
+node *y = x->fd;
+node *t2 = y->fg;
+
+x->bal = max(bal1(x->fg), bal1(x->fd)) + 1;
+y->bal = max(bal1(y->fg), bal1(y->fd)) + 1;
+
+return y;
+
+}
+
+int getb(node *avl) {
+if (avl == NULL) {
+return 0;
+}
+return bal1(avl->fg) - bal1(avl->fd);
+}
+
+node *insert(node *avl, char *data) {
+if(avl == NULL) {
+return newNode(data);
+}
+
+int key = avl->asc;
+
+if( key < avl->asc){
+avl->fg = insert(avl->fg, data);
+printf("recc > ASC : %d | STR : %s\n", key, data);
+}
+else if (key > avl->asc){
+avl->fd = insert(avl->fd, data);
+printf("recc < ASC : %d | STR : %s\n", key, data);
+}
+else { // cas d'égalité
+avl->occ++;
+printf("occ FOUND ASC : %d | STR %s\n", key, data);
+return avl;
+}
+
+key = getAsci(data);
+
+avl->bal = 1 + max(bal1(avl->fg), bal1(avl->fd));
+int balance = getb(avl);
+
+if (balance > 1 && key < avl->fg->asc) {
+return rightRotate(avl);
+}
+
+if (balance < -1 && key > avl->fd->asc) {
+return leftRotate(avl);
+}
+
+if (balance > 1 && key > avl->fg->asc) {
+avl->fg = leftRotate(avl->fg);
+return rightRotate(avl);	
+}
+
+if (balance < -1 && key < avl->fd->asc) {
+avl->fd = rightRotate(avl->fd);
+return leftRotate(avl);
+}
+
+return avl;
+
+}
+
+node *search(node *avl, int key) {
+if(avl == NULL || key == avl->asc) {
+return avl;
+}
+if (key > avl->asc) {
+return search(avl->fd, key);
+}
+else if(key < avl->asc) {
+return search(avl->fg, key);
+}
+
+}
+
+void prefix(node *avl) {
+if (avl != NULL) {
+prefix(avl->fg);
+printf("VILLE : %s / OCC : %d / BAL : %d / ASC : %d \n", avl->data, avl->occ, avl->bal, avl->asc);
+prefix(avl->fd);
+}
+}
+
+int main(int argc, char *argv[1]) {
+
+node *root = NULL;
+if(argc < 2) {
+printf("arg error\n");
+exit(1);
+}
+char csv[30];
+int row = atoi(argv[1]);
+strcpy(csv, argv[2]);
+
+FILE *file = fopen(csv, "r");
+if(file == NULL) {
+printf("file null\n");
+exit(1);
+}
+char buff[256];
+int ct = 0;
+
+while (fgets(buff, sizeof(buff), file) != NULL && ct < row) {
+char *token = strtok(buff, ";");
+int col = 1;
+
+while (token != NULL && col <= 6) {
+if (col == 3 | col == 4){
+printf("VERIF : %s\n", token);
+root = insert(root, token);
+}
+token = strtok(NULL, ";");
+col++;
+}
+ct++;
+}
+fclose(file);
+printf("PREFIX\n");
+prefix(root);
+}
+
