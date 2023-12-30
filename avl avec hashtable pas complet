@@ -18,7 +18,7 @@ struct node *fg;
 struct node *fd;
 }
 
-dat hashtable[TABSIZE] = {NULL};
+dat *hashtable[TABSIZE] = {NULL};
 
 unisgned int hashfunc(dat d1) { // dat *d1 ou dat d1 ??
 char *data = NULL;
