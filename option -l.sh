@@ -24,6 +24,21 @@ exec_timetotal_l=$(echo "$exec_timeend_l - $exec_timestart_l" | bc)
 
 echo "Temps d'exécution total du script : $exec_timetotal_l secondes"
 
-gnuplot plot "ID_Trajet_distance.dat"
+gnuplot -persist <<-PLOT
+
+set terminal png
+set output 'Trajet_Distance.png'
+set ylabel 'DISTANCE (km)'
+set xlabel 'ROUTE ID'
+set title 'Top 10 trajets les plus long'
+set style data histograms
+set style fill solid 1.0 border -1
+set boxwidth 1
+set grid ytics
+unset xrange
+set datafile separator " "
+plot 'ID_Trajet_distance.dat' using 1 with linespoints notitle lc rgb "blue"
+
+PLOT
 
 exit 0
