@@ -12,7 +12,7 @@ csv_file="$1"
 
 # Extraction des ID et de la distance totale parcourue
 awk -F ';' '{ sum[$1] += $5 } END { for (i in sum) print sum[i], i }' "$csv_file" | \
-    sort -nr | head -n 10 > "ID_Trajet_distance.dat"
+    sort -nr | head -n 10 > "ID_Trajet_distance.dat" // pb avc tri : tri doit etre croissant sur colonne n°2 et sort -n -k2 tri incorrectement
 
 # Afficher le contenu du fichier temporaire
 echo "Contenu du fichier ID_Trajet_distance.dat :"
@@ -37,7 +37,7 @@ set boxwidth 1
 set grid ytics
 unset xrange
 set datafile separator " "
-plot 'ID_Trajet_distance.dat' using 1 with linespoints notitle lc rgb "blue"
+plot 'ID_Trajet_distance.dat' using 1:xtic(sprintf("%s %s", stringcolumn(2), stringcolumn(3))) notitle lc rgb "green" // pb dans disposition et manipulatiuon histo
 
 PLOT
 
