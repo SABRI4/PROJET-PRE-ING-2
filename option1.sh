@@ -1,52 +1,59 @@
 #!/bin/bash
 
-home="/home"
+# Définir le répertoire de base où se trouve le fichier CSV
+home="/home/younes/Info"
 
+# Vérifier si le nom du fichier CSV est fourni en argument
 if [ $# -eq 0 ]; then
-    echo "Usage: $0 <csv_file>"
+    echo "Usage: $0 <csv_filename>"
     exit 1
 fi
 
-csv_file="$1"
+# Chemin complet du fichier CSV
+csv_file="${home}/${1}"
 
-# Process CSV file and get the top 10 drivers
-top_conducteurs=$(cut -d ';' -f 1,6 "$csv_file" | sort | uniq -c | sort -nr | head -n 10)
+# Chemin complet du fichier de sortie
+output_file="${home}/conducteur_trajets.dat"
 
-echo "Top 10 des conducteurs avec le plus de trajets différents:"
-echo "$top_conducteurs" | while read count name route_id; do
-    printf "%-6s %-20s %-10s\n" "$count" "$name" "$route_id"
-done
+# Utiliser awk pour traiter le fichier CSV
+awk -F';' '
+    NR > 1 {
+        # Créer une clé unique pour chaque combinaison de conducteur et de Route ID
+        if (!(($6 SUBSEP $1) in unique)) {
+            unique[$6 SUBSEP $1]
+            count[$6]++
+        }
+    }
+    END {
+        # Imprimer les résultats pour chaque conducteur
+        for (driver in count) {
+            print count[driver], driver
+        }
+    }
+' "$csv_file" | sort -nrk1,1 | head -n 10 > "$output_file"
 
-# Save data to a file for Gnuplot
-echo "$top_conducteurs" | awk '{print $3, $1}' > "$home/younes/Info/conducteurstrajets.dat"
+# Afficher le contenu du fichier de sortie
+echo "Contenu du fichier conducteur_trajets.dat :"
+cat "$output_file"
 
-# Generate Gnuplot script
-gnuplot_script="$home/younes/Info/plot_script.gnu"
-cat > "$gnuplot_script" << EOL
+
+# Création de l'histogramme avec Gnuplot
+gnuplot -persist <<-PLOT
+
 set terminal png
-set output 'conducteurstrajets_plot.png'
-set title 'Top 10 Conducteurs avec le Plus de Trajets Différents'
-set xlabel 'Nombre de Trajets'
-set ylabel 'Conducteurs'
-set style fill solid
-set boxwidth 0.42
-set ytics nomirror
-set yrange [0:60]
-set xtics rotate by -45
-plot "$home/younes/Info/conducteurstrajets.dat" using 2:xtic(1) with boxes title 'Nombre de Trajets'
-EOL
+set output 'conducteurs_histogramme.png'
+set ylabel 'NB ROUTES'
+set xlabel 'DRIVERS NAMES'
+set title 'Top 10 conducteurs avec le plus de trajets'
+set style data histograms
+set style fill solid 1.0 border -1
+set boxwidth 1
+set grid ytics
+unset yrange
+set xtics rotate by -45 
+set datafile separator " "
+plot "$home/conducteur_trajets.dat" using 1:xtic(sprintf("%s %s", stringcolumn(2), stringcolumn(3)))  notitle lc rgb "blue"
 
-# Run Gnuplot
-gnuplot "$gnuplot_script"
-
-# Open the PNG file
-eog "$home/younes/Info/conducteurstrajets_plot.png" 
-
-
-# Display completion message
-echo "Graphique créé avec succès : conducteurstrajets_plot.png"
-
-# Clean up temporary files
-rm "$home/younes/Info/conducteurstrajets.dat" "$gnuplot_script"
+PLOT
 
 exit 0
