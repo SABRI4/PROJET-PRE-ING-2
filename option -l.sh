@@ -24,4 +24,6 @@ exec_timetotal_l=$(echo "$exec_timeend_l - $exec_timestart_l" | bc)
 
 echo "Temps d'exécution total du script : $exec_timetotal_l secondes"
 
+gnuplot plot "ID_Trajet_distance.dat"
+
 exit 0
