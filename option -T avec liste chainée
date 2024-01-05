@@ -1,0 +1,296 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/*
+-enlever les printfs qui servent a debug
+-ajouter un parcours d'avl pour donner les valeur d'occurence les + elevées en premier
+-manque les free() pour les nodes d'avl et les nodes cityInfo
+-peut-etre trier par ordre alphabétiques les villes à l'intérieur de idxTab 
+-"Une ville n’est traversée qu’une seule fois par trajet, mais forcément elle
+peut apparaître deux fois dans les données, une fois comme ville de
+départ d’une étape, et une autre fois comme ville d’arrivée de l’étape
+précédente. Il vous faudra gérer ce cas un peu particulier." comment résoudre ca?
+-que faire des "occd" nombre de fois ou la ville est ville de départ
+*/
+
+typedef struct CityInfo {
+char name[60];
+int occ;
+int occd;
+struct CityInfo *nex;
+}inf;
+
+typedef struct AvlNode {
+struct CityInfo info;
+int height;
+struct AvlNode *fg;
+struct AvlNode *fd;
+int idxOccd[500]; //SCALE 
+char idxTab[500][60]; //SCALE
+int id;
+}node;
+
+int max(int a, int b) {
+if (a > b) {
+return a;
+}
+else {
+return b;
+} 
+}
+
+int getH(node *avl) {
+if(avl == NULL) {
+return 0;
+}
+return avl->height;
+}
+
+int getB(node *avl) {
+if(avl == NULL) {
+return 0;
+}
+return getH(avl->fg) - getH(avl->fd);
+}
+
+node *RRotate(node *y) {
+node *x = y->fg;
+node *T2 = x->fd;
+
+y->fd = y;
+y->fg = T2;
+
+y->height = 1 + max(getH(y->fg), getH(y->fd));
+x->height = 1 + max(getH(x->fg), getH(x->fd));
+
+return y;
+}
+
+node *LRotate(node *x) {
+node *y = x->fd;
+node *T2 = y->fg;
+
+y->fg = x;
+x->fd = T2;
+
+x->height = 1 + max(getH(x->fg), getH(x->fd));
+y->height = 1 + max(getH(y->fg), getH(y->fd));
+
+return y;
+}
+
+node *newNode(inf *city) {
+node *new = malloc(sizeof(node));
+if (new != NULL){
+new->info = *city;
+if(new->info.occ != city->occ){printf("DISS ERROR\n");exit(1);}
+new->height = 1;
+new->fg = NULL;
+new->fd = NULL;
+new->id = 0;
+return new;
+}
+}
+
+node *insert(node *avl, inf *city) {
+printf("AVL CALL\n");
+if(avl == NULL){
+return newNode(city);
+}
+int key = city->occ;
+printf("CITY KEY %d\n", key);
+if(key > avl->info.occ) {
+avl->fd = insert(avl->fd, city);
+}
+else if(key < avl->info.occ) {
+avl->fg = insert(avl->fg, city);
+}
+else if(key == avl->info.occ){ //meme nb d'occ mais ville forcement differentes car doublons rassemlbés dans htable.
+printf("ADDED TO OCC %d | AS %d TH IN IDXTAB | MAIN CITY %s\n", avl->info.occ, avl->id, avl->info.name);
+strcpy(avl->idxTab[avl->id], city->name);
+avl->idxOccd[avl->id] = city->occd;
+//avl->idxTab[avl->id] = hashFunction(city->name);
+avl->id++;
+}
+
+int balance = getB(avl);
+
+//ici rotations
+if (balance > 1 && key < avl->fg->info.occ) {
+return RRotate(avl);
+}
+
+if (balance < -1 && key > avl->fd->info.occ){
+return LRotate(avl);
+}
+
+if (balance > 1 && key > avl->fg->info.occ) {
+avl->fg = LRotate(avl->fg);
+return RRotate(avl);
+}
+
+if (balance < -1 && key < avl->fd->info.occ) {
+avl->fd = RRotate(avl->fd);
+return LRotate(avl);
+}
+
+return avl;
+
+}
+
+node *parseTable(node *avl, inf **root) {
+if(avl==NULL){printf("avl null parseTable\n");}
+if(*root==NULL){printf("root null parseTable 2\n");}
+if(root==NULL){printf("root null parseTable\n");}
+printf("%s\n",(*root)->name);   
+ printf("START PARSE\n");
+inf *curr = *root;   
+ while(curr != NULL) {
+printf("insde while parseTablelll\n");    
+
+avl = insert(avl, curr);
+
+    curr = curr->nex;
+    }
+return avl;
+}
+
+inf *newInfo(char *cname, int occ, int occd) {
+inf *new = malloc(sizeof(inf));
+if (new != NULL) {
+strcpy(new->name, cname);
+new->occ = occ;
+new->occd = occd;
+new->nex = NULL;
+return new;
+}
+}
+
+int search(inf **root, char *cname, int occd) {
+printf("search call\n");
+    inf *curr = *root;
+    while(curr != NULL) {
+        if(strcmp(curr->name, cname) == 0) {
+            curr->occ++;
+            if(occd) {curr->occd++;}
+            return 1;
+        }
+        curr = curr->nex;
+    }
+    return 0;
+}
+
+inf *process(char *cname, int occ, int occd, inf **root) {
+        if(root == NULL) {printf("ROOT NULL PROCESS\n");}
+    inf *new = newInfo(cname, occ, occd);
+    if(new == NULL) {printf("newinf NULL\n");exit(1);}
+    
+    if(search(root, cname, occd)) {
+        return *root;
+    } 
+    else if(search(root, cname, occd) == 0) {
+    new->nex = *root;
+    *root = new;
+    return *root;
+    }
+}
+
+inf * proCsv(char *csv, int row, inf **root) {
+FILE *file = fopen(csv, "r");
+if( file == NULL) {printf("file NULL\n"); exit(1);}
+
+char buff[256];
+int col;
+int ct = 0 ; // 1 pour eviter town a town b
+int step;
+int fline = 1;
+
+while(fgets(buff, sizeof(buff), file) != NULL && ct < row) {
+char *token = strtok(buff, ";");
+col = 1;
+printf("-------------------------------------ROW %d----------------------\n", ct);// A DELETE
+if(fline) {
+printf("skipping fline\n");
+fline = 0;
+ct++;
+continue;
+}
+
+while(token != NULL && col <= 6) {
+printf("inside while 1 || COL = %d\n", col);
+if(col == 2) {
+step = atoi(token);
+}
+else if(col == 3 || col == 4) {
+if(step == 1 && col == 3) {//logique d'ajt en cas de ville1 == épart
+printf("bef process 1, 1\n");
+*root = process(token, 1, 1, root);
+}
+else {
+printf("bef process 1, 0\n");
+*root = process(token, 1, 0, root);
+}
+}
+token = strtok(NULL, ";");
+col++; 
+}
+ct++;
+}
+printf("fclose file\n");
+fclose(file);
+return *root;
+}
+
+void tp1(node *avl) {
+    printf("main : %s | %d | %d\n", avl->info.name, avl->info.occ, avl->info.occd);
+    printf("id %d\n", avl->id);
+    for(int i = 0; i < avl->id; i++) {
+        printf("idx %d | %s | %d | %d\n", i, avl->idxTab[i], avl->info.occ, avl->idxOccd[i]);
+    }
+}
+void cprint(inf **root) {
+inf *curr = *root;
+     while(curr != NULL) {
+    printf("%s -> %d\n", curr->name, curr->occ);
+    curr = curr->nex;  
+        printf("root nex done\n");
+    }
+}
+
+void parc(node *avl) {
+if(avl != NULL) {
+printf("main %s | %d | idx %d\n", avl->info.name, avl->info.occ, avl->id);
+for(int i = 0; i < avl->id; i++) {
+printf("idx %d | %s | %d\n", i, avl->idxTab[i], avl->idxOccd[i]);
+}
+parc(avl->fg);
+parc(avl->fd);
+}
+}
+
+int main(int argc, char *argv[]) {
+
+int row = 0;
+char csv[50];
+
+node *avl = NULL;
+inf *root = NULL;
+
+if(argc < 2) {
+printf("USAGE : ./file <rows> <csv_file>\n");
+exit(1);
+}
+else {
+row = atoi(argv[1]);
+strcpy(csv, argv[2]);
+}
+root = proCsv(csv, row, &root); //lecture fichier csv -> insertion / incrementation dans htable
+printf("bef cprint\n");
+cprint(&root);
+printf("bef parsetable\n");
+avl = parseTable(avl, &root); // parcours de la table et ajout de tout les occ > 1 dans avl
+printf("bef 2nd cprint\n");
+cprint(&root);
+parc(avl);
+}
