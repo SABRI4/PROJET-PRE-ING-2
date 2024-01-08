@@ -25,3 +25,4 @@ awk -F';' '
 # Afficher les 10 trajets les plus longs triés par identifiant de trajet
 echo "Les 10 trajets les plus longs :"
 cat "${home}/top_trajets.dat"
+xticlabels
