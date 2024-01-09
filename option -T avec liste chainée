@@ -2,16 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MACRO_IGN1 1 // ignorer toute les occ == 1 à l'insertion dans l'avl
+#define MACRO_BUCKETSIZE 3500000 // ?
 /*
--enlever les printfs qui servent a debug
--ajouter un parcours d'avl pour donner les valeur d'occurence les + elevées en premier
--manque les free() pour les nodes d'avl et les nodes cityInfo
--peut-etre trier par ordre alphabétiques les villes à l'intérieur de idxTab 
--"Une ville n’est traversée qu’une seule fois par trajet, mais forcément elle
-peut apparaître deux fois dans les données, une fois comme ville de
-départ d’une étape, et une autre fois comme ville d’arrivée de l’étape
-précédente. Il vous faudra gérer ce cas un peu particulier." comment résoudre ca?
--que faire des "occd" nombre de fois ou la ville est ville de départ
+
+*enlever les dernier printfs
+*corriger le tableau des resultats
+*trier par ordre alphabétique les resultats
+
 */
 
 typedef struct CityInfo {
@@ -26,10 +24,40 @@ struct CityInfo info;
 int height;
 struct AvlNode *fg;
 struct AvlNode *fd;
-int idxOccd[500]; //SCALE 
-char idxTab[500][60]; //SCALE
+// int idxTab[500] ex : idxTab[1] = htable[index] = marseille (occ = 22) |idxTab[2] = htable[index] = dijon (occ = >
+//donc possibilité de store plusieurs doublon au meme endroit, store uniquement index de la table pr easy acces et >
+//prendre en comppte la vile originale(1er ajouté pour cet valeur d'occ) +  toute les villes suivante de idxTab en >
+int idxOccd[MACRO_BUCKETSIZE]; //SCALE 
+char idxTab[MACRO_BUCKETSIZE][60]; //SCALE
 int id;
 }node;
+
+//int hashFunction(const char* cityName); //prototype hashFunc utilisée dans tt le programme  
+inf *result[11] = {NULL};
+
+void freeList(inf **root) {
+
+inf *curr = *root;
+inf *nex;
+
+while(curr != NULL) {
+nex = curr->nex;
+free(curr);
+curr = nex;
+}
+*root = NULL;
+}
+
+void freeAvl(node *avl) {
+if(avl == NULL) {
+return;
+}
+
+freeAvl(avl->fg);
+freeAvl(avl->fd);
+free(avl);
+
+}
 
 int max(int a, int b) {
 if (a > b) {
@@ -77,6 +105,19 @@ x->fd = T2;
 x->height = 1 + max(getH(x->fg), getH(x->fd));
 y->height = 1 + max(getH(y->fg), getH(y->fd));
 
+return x;
+}
+
+node *LRotate(node *x) {
+node *y = x->fd;
+node *T2 = y->fg;
+
+y->fg = x;
+x->fd = T2;
+
+x->height = 1 + max(getH(x->fg), getH(x->fd));
+y->height = 1 + max(getH(y->fg), getH(y->fd));
+
 return y;
 }
 
@@ -94,12 +135,12 @@ return new;
 }
 
 node *insert(node *avl, inf *city) {
-printf("AVL CALL\n");
+//printf("AVL CALL\n");
 if(avl == NULL){
 return newNode(city);
 }
 int key = city->occ;
-printf("CITY KEY %d\n", key);
+//printf("CITY KEY %d\n", key);
 if(key > avl->info.occ) {
 avl->fd = insert(avl->fd, city);
 }
@@ -107,7 +148,7 @@ else if(key < avl->info.occ) {
 avl->fg = insert(avl->fg, city);
 }
 else if(key == avl->info.occ){ //meme nb d'occ mais ville forcement differentes car doublons rassemlbés dans htable.
-printf("ADDED TO OCC %d | AS %d TH IN IDXTAB | MAIN CITY %s\n", avl->info.occ, avl->id, avl->info.name);
+//printf("ADDED TO OCC %d | AS %d TH IN IDXTAB | MAIN CITY %s\n", avl->info.occ, avl->id, avl->info.name);
 strcpy(avl->idxTab[avl->id], city->name);
 avl->idxOccd[avl->id] = city->occd;
 //avl->idxTab[avl->id] = hashFunction(city->name);
@@ -134,6 +175,15 @@ if (balance < -1 && key < avl->fd->info.occ) {
 avl->fd = RRotate(avl->fd);
 return LRotate(avl);
 }
+if (balance > 1 && key > avl->fg->info.occ) {
+avl->fg = LRotate(avl->fg);
+return RRotate(avl);
+}
+
+if (balance < -1 && key < avl->fd->info.occ) {
+avl->fd = RRotate(avl->fd);
+return LRotate(avl);
+}
 
 return avl;
 
@@ -143,16 +193,22 @@ node *parseTable(node *avl, inf **root) {
 if(avl==NULL){printf("avl null parseTable\n");}
 if(*root==NULL){printf("root null parseTable 2\n");}
 if(root==NULL){printf("root null parseTable\n");}
+printf("bef access to (*root)\n");
 printf("%s\n",(*root)->name);   
  printf("START PARSE\n");
 inf *curr = *root;   
+int fline = 1;
+printf("bef while parseTable\n");
  while(curr != NULL) {
-printf("insde while parseTablelll\n");    
-
+//printf("insde while parseTablelll\n");    
+if(((curr->occ > 1 || fline) && MACRO_IGN1) || MACRO_IGN1 == 0) {
+//printf("AVL INSERTION\n");
 avl = insert(avl, curr);
-
-    curr = curr->nex;
+if(curr->occ == 1) {fline=0;}    
+}
+curr = curr->nex;
     }
+//freeList(root); case probleme pr result ??
 return avl;
 }
 
@@ -168,7 +224,7 @@ return new;
 }
 
 int search(inf **root, char *cname, int occd) {
-printf("search call\n");
+//printf("search call\n");
     inf *curr = *root;
     while(curr != NULL) {
         if(strcmp(curr->name, cname) == 0) {
@@ -209,7 +265,7 @@ int fline = 1;
 while(fgets(buff, sizeof(buff), file) != NULL && ct < row) {
 char *token = strtok(buff, ";");
 col = 1;
-printf("-------------------------------------ROW %d----------------------\n", ct);// A DELETE
+//printf("-------------------------------------ROW %d----------------------\n", ct);// A DELETE
 if(fline) {
 printf("skipping fline\n");
 fline = 0;
@@ -218,17 +274,17 @@ continue;
 }
 
 while(token != NULL && col <= 6) {
-printf("inside while 1 || COL = %d\n", col);
+//printf("inside while 1 || COL = %d\n", col);
 if(col == 2) {
 step = atoi(token);
 }
 else if(col == 3 || col == 4) {
 if(step == 1 && col == 3) {//logique d'ajt en cas de ville1 == épart
-printf("bef process 1, 1\n");
+//printf("bef process 1, 1\n");
 *root = process(token, 1, 1, root);
 }
 else {
-printf("bef process 1, 0\n");
+//printf("bef process 1, 0\n");
 *root = process(token, 1, 0, root);
 }
 }
@@ -242,13 +298,14 @@ fclose(file);
 return *root;
 }
 
-void tp1(node *avl) {
+/*void tp1(node *avl) {
     printf("main : %s | %d | %d\n", avl->info.name, avl->info.occ, avl->info.occd);
     printf("id %d\n", avl->id);
     for(int i = 0; i < avl->id; i++) {
         printf("idx %d | %s | %d | %d\n", i, avl->idxTab[i], avl->info.occ, avl->idxOccd[i]);
     }
-}
+}*/
+
 void cprint(inf **root) {
 inf *curr = *root;
      while(curr != NULL) {
@@ -258,15 +315,64 @@ inf *curr = *root;
     }
 }
 
-void parc(node *avl) {
-if(avl != NULL) {
+void extr(node *avl, int count) {
+if(count > 10 || avl == NULL) {
+return;
+}
+else {
+printf("avl != NULL && count < 10 !\n");
+}
+extr(avl->fd, count);
+if(&avl->info == NULL){printf("AVL INFO NULL EXTR\n");}
+//if(avl->info == NULL){printf("AVL INFO NULL EXTR22\n");}
+printf("bef access avl->info\n");
+printf("%s EXTR\n", avl->info.name);
+result[count] = &avl->info;
+count++;
+printf("bef acces idxTab\n");
+for(int i = 0; i < avl->id; i++) {
+if(count > 10){break;}
+result[count] = newInfo(avl->idxTab[i], avl->info.occ, avl->idxOccd[i]);
+count++;
+printf("boucle : newInfo...\n");
+}                //logique pr inserer tout le bucket dans result |||||| ajouter une fonction pour trier par ordre a>
+//count += avl->id; // id - 1 / id / id+1 ?
+
+extr(avl->fg, count);
+}
+void parc(node *avl) { // a modif tq => fd/racine/fg
+if(avl == NULL) {
+return;
+}
+parc(avl->fd);
+
 printf("main %s | %d | idx %d\n", avl->info.name, avl->info.occ, avl->id);
+if(avl->id){
 for(int i = 0; i < avl->id; i++) {
 printf("idx %d | %s | %d\n", i, avl->idxTab[i], avl->idxOccd[i]);
 }
-parc(avl->fg);
-parc(avl->fd);
 }
+parc(avl->fg);
+}
+
+inf *adjust(inf **root) {
+
+int ut;
+inf *curr = *root;
+while(curr != NULL) {
+if(curr->occ > 1) { // ajustement ville à la fois depart et arrivée
+curr->occ = (curr->occ - curr->occd)/2;
+curr->occ += curr->occd; // a verif
+}
+
+curr = curr->nex;
+}
+return *root;
+}
+
+void tparc(node *avl){
+if(avl == NULL) {
+return;
 }
 
 int main(int argc, char *argv[]) {
@@ -285,12 +391,38 @@ else {
 row = atoi(argv[1]);
 strcpy(csv, argv[2]);
 }
+printf("bef lecture / insertion dans liste\n");
 root = proCsv(csv, row, &root); //lecture fichier csv -> insertion / incrementation dans htable
+root = adjust(&root);
 printf("bef cprint\n");
-cprint(&root);
+//cprint(&root);
 printf("bef parsetable\n");
+//if(*root == NULL){printf("main : root == NULL\n");}
 avl = parseTable(avl, &root); // parcours de la table et ajout de tout les occ > 1 dans avl
-printf("bef 2nd cprint\n");
-cprint(&root);
-parc(avl);
+if(avl == NULL){printf("AFTER PARESETAVLE RETURN AVL NULL\n");}
+printf("bef 2nd cprint(obs) bef parc\n");
+//cprint(&root);inf deja free
+//parc(avl);
+printf("bef extr\n");
+extr(avl, 0);
+printf("after extr\n");
+//freeAvl(avl);
+printf("after free AVL\n");
+//result[0] = malloc(sizeof(inf));
+//result[0] = newInfo(avl->info.name, 1, 56);
+//printf("%s | %d\n", result[0]->name, result[0]->occ);
+if(avl == NULL) {printf("AVL NULL BEF RESULT 0 \n");}
+//result[0] = &avl->info;
+tparc(avl);
+printf("after access rsult 0\n");
+for(int i = 0; i < 10; i++) {
+if(result[i] == NULL) {printf("case %d empty!\n", i);}
+else{
+printf("%d : %s | %d |%d\n", i, result[i]->name, result[i]->occ, result[i]->occd);
+}
+}
+printf("afetr rez\n");
+freeAvl(avl);
+freeList(&root);
+printf("memory freed\n");
 }
