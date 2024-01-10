@@ -40,7 +40,7 @@ new->fd = NULL;
 return new;
 }
 }
-inf *newInfo(int key, int dist) {
+inf *newInfo(int key, float dist) {
 inf *new = malloc(sizeof(inf));
 if(new != NULL) {
 new->id = key;
