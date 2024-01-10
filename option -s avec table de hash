@@ -9,6 +9,7 @@
 *resoudre float->int
 *mettre free
 *fonction de resultat 50 + grand totaux
+*gérer les égalité en insertion avl car peut fausser data
 */
 
 typedef struct trajetInfo { // risque de hash : colisions entre deux routeID deffierent
