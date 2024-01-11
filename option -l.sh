@@ -40,6 +40,7 @@ set style data histograms
 set style fill solid 1.0 border -1
 set boxwidth 1
 set grid ytics
+set xtics rotate by -45
 set yrange [0:*]
 set datafile separator " "
 plot 'temp/top_trajets.dat' using 1:xtic(2) notitle lc rgb "green"
