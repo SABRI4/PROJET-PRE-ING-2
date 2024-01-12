@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define MACRO_LOWSAMPLE 0 // en cas de petit nb de row le max = le min car pas de plusieurs etap
-#define MACRO_PRINTROW 1 //permet de print les ----ROW---- ou non
+#define MACRO_PRINTROW 0 //permet de print les ----ROW---- ou non
 
 typedef struct trajetInfo {
 int id;
@@ -109,10 +110,10 @@ else if(key < avl->traj.id) {
 avl->fg = insert2(avl->fg, newInf);
 }
 else if(key == avl->traj.id){ 
-printf("EGALITE DE TRAJETID  %d \n", key);
+//printf("EGALITE DE TRAJETID  %d \n", key);
 if(newInf->max > avl->traj.max) {avl->traj.max = newInf->max;}
 if(newInf->min < avl->traj.min) {avl->traj.min = newInf->min;}
-printf("ADDED %f to MOY %f\n", newInf->min, avl->traj.moy);
+//printf("ADDED %f to MOY %f\n", newInf->min, avl->traj.moy);
 avl->traj.moy += newInf->min;
 avl->traj.etap++;
 }
@@ -208,7 +209,7 @@ else if(key < avl->traj.tot) {
 avl->fg = insert(avl->fg, dist);
 }
 else if(key == avl->traj.tot){ //meme nb d'occ mais ville forcement differentes car doublons rassemlbés dans htable.
-printf("EGALITE DE TOTAL  %f \n", key); // cas impossible /tres rare ?
+//printf("DEUX DISTANCES TOTALES EGALES (CAS PARTICULIER) = %f\n", key); // cas impossible /tres rare ?
 }
 
 int balance = getB(avl);
@@ -293,6 +294,7 @@ parcours(avl->fd);
 
 int main(int argc, char *argv[]) {
 
+clock_t start_time = clock();
 int row = 0;
 char csv[50];
 
@@ -315,4 +317,6 @@ printf("launch parseTable\n");
 avl = parseTable(avl, avl2);
 printf("launch parcours\n");
 parcours(avl);
+clock_t time4 = clock();
+printf("EXECTIME : %f\n", ((double)(time4 - start_time))/CLOCKS_PER_SEC);
 }
