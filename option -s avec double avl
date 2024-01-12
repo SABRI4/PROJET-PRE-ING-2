@@ -315,8 +315,11 @@ printf("launch adjust\n");
 avl2 = adjust(avl2); // crée les moyennes + crée les totaux
 printf("launch parseTable\n");
 avl = parseTable(avl, avl2);
+clock_t time1 = clock();
 printf("launch parcours\n");
 parcours(avl);
-clock_t time4 = clock();
-printf("EXECTIME : %f\n", ((double)(time4 - start_time))/CLOCKS_PER_SEC);
+clock_t time2 = clock();
+double elap1 = ((double)(time2 - start_time))/CLOCKS_PER_SEC;
+double elap2 = ((double)(time1 - start_time))/CLOCKS_PER_SEC;
+printf("EXECTIME : TOTAL = %f\nEXECTIME : REAL = %f\n", elap1, elap2);
 }
