@@ -49,7 +49,7 @@ return new;
 int getAsc(char *city) {
     int length = sizeof(city) - 1; 
     for (int i = 0; i < length; i++) {
-        int asciiValue = (int)myString[i];
+        int asciiValue = (int)city[i];
     }
     return asciiValue;
 }
@@ -125,29 +125,29 @@ node *insert(node *avl, inf *city) {
     int balance = getB(avl);
 
 //ici rotations
-if (balance > 1 && key < avl->fg->info.occ) {
+if (balance > 1 && key < avl->fg->inf.occ) {
 return RRotate(avl);
 }
 
-if (balance < -1 && key > avl->fd->info.occ){
+if (balance < -1 && key > avl->fd->inf.occ){
 return LRotate(avl);
 }
 
-if (balance > 1 && key > avl->fg->info.occ) {
+if (balance > 1 && key > avl->fg->inf.occ) {
 avl->fg = LRotate(avl->fg);
 return RRotate(avl);
 }
 
-if (balance < -1 && key < avl->fd->info.occ) {
+if (balance < -1 && key < avl->fd->inf.occ) {
 avl->fd = RRotate(avl->fd);
 return LRotate(avl);
 }
-if (balance > 1 && key > avl->fg->info.occ) {
+if (balance > 1 && key > avl->fg->inf.occ) {
 avl->fg = LRotate(avl->fg);
 return RRotate(avl);
 }
 
-if (balance < -1 && key < avl->fd->info.occ) {
+if (balance < -1 && key < avl->fd->inf.occ) {
 avl->fd = RRotate(avl->fd);
 return LRotate(avl);
 }
@@ -155,7 +155,7 @@ return LRotate(avl);
 return avl;
 }
 
-inf * proCsv(char *csv, int row, node *avl) {
+node * proCsv(char *csv, int row, node *avl) {
 FILE *file = fopen(csv, "r");
 if( file == NULL) {printf("file NULL\n"); exit(1);}
 
@@ -184,7 +184,7 @@ step = atoi(token);
 else if(col == 3 || col == 4) {
 if(step == 1 && col == 3) {//logique d'ajt en cas de ville1 == épart
 //printf("bef process 1, 1\n");
-inf *city = newNode(token, 1);
+inf *city = newInfo(token, 1);
 avl = insert(avl, city);
 }
 else {
@@ -227,29 +227,29 @@ node *insert2(node *avl, inf *city) {
         int balance = getB(avl);
 
 //ici rotations
-if (balance > 1 && key < avl->fg->info.occ) {
+if (balance > 1 && key < avl->fg->inf.occ) {
 return RRotate(avl);
 }
 
-if (balance < -1 && key > avl->fd->info.occ){
+if (balance < -1 && key > avl->fd->inf.occ){
 return LRotate(avl);
 }
 
-if (balance > 1 && key > avl->fg->info.occ) {
+if (balance > 1 && key > avl->fg->inf.occ) {
 avl->fg = LRotate(avl->fg);
 return RRotate(avl);
 }
 
-if (balance < -1 && key < avl->fd->info.occ) {
+if (balance < -1 && key < avl->fd->inf.occ) {
 avl->fd = RRotate(avl->fd);
 return LRotate(avl);
 }
-if (balance > 1 && key > avl->fg->info.occ) {
+if (balance > 1 && key > avl->fg->inf.occ) {
 avl->fg = LRotate(avl->fg);
 return RRotate(avl);
 }
 
-if (balance < -1 && key < avl->fd->info.occ) {
+if (balance < -1 && key < avl->fd->inf.occ) {
 avl->fd = RRotate(avl->fd);
 return LRotate(avl);
 }
@@ -289,7 +289,7 @@ void parcours(node *avl) {
     parcours(avl->fg);
     
     printf("main city : %s | occNode : %d | occInf : %d | main occd %d\n"; avl->inf.city, avl->gocc, avl->city.occ, avl->city.occd);
-    for(int i = 0; i < tabSize; i++) {
+    for(int i = 0; i < avl->tabSize; i++) {
         printf("idx : %d | city : %s | occd : %d\n", i, avl->tabAsc[i].ville, avl->tabOccd[i]);
     }
     
@@ -297,7 +297,7 @@ void parcours(node *avl) {
     
 }
 
-int main()
+int main(int argc, char *argv[])
 {
 int row = 0;
 char csv[50];
