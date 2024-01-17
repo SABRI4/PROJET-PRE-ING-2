@@ -16,7 +16,7 @@ csv_file="${home}/${1}"
 output_file="${home}/conducteur_trajets.dat"
 
 # Utiliser awk pour traiter le fichier CSV
-awk -F';' '
+awk -b -F';' '
     NR > 1 {
         # Créer une clé unique pour chaque combinaison de conducteur et de Route ID
         if (!(($6 SUBSEP $1) in unique)) {
@@ -33,8 +33,7 @@ awk -F';' '
 ' "$csv_file" | sort -nrk1,1 | head -n 10 > "$output_file"
 
 # Afficher le contenu du fichier de sortie
-echo "Contenu du fichier conducteur_trajets.dat :"
-cat "$output_file"
+echo "Contenu du fichier conducteur_trajets.dat :" cat "$output_file"
 
 
 # Création de l'histogramme avec Gnuplot
@@ -50,7 +49,7 @@ set style fill solid 1.0 border -1
 set boxwidth 1
 set grid ytics
 unset yrange
-set xtics rotate by -45 
+set xtics rotate by -45
 set datafile separator " "
 plot "$home/conducteur_trajets.dat" using 1:xtic(sprintf("%s %s", stringcolumn(2), stringcolumn(3)))  notitle lc rgb "blue"
 
