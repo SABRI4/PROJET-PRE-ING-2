@@ -23,20 +23,23 @@ cat "$home/younes/Info/conducteur_distance.dat"
 
 gnuplot -persist <<PLOT
 
-set terminal png
-set output 'option2graph.png'
-set ylabel 'DISTANCE (Km)'  # This now becomes the categorical axis
-set xlabel 'DRIVERS NAMES'  # This now becomes the numerical axis
-set title 'Option -d2 : Distance = f(Driver)'
+set terminal png size 1280,720
+set output 'option_d2.png'
 set style data histograms
-set style histogram rowstacked  # This will stack the bars in one row
 set style fill solid border -1
-set boxwidth 0.65 relative
-set grid ytics
-set xtics rotate by -45
-unset yrange  # This allows Gnuplot to auto-scale the y-axis
-set datafile separator " "
-plot "$home/younes/Info/conducteur_distance.dat" using 1:xtic(sprintf("%s %s", stringcolumn(2), stringcolumn(3))) notitle lc rgb "purple"
+set boxwidth 2 relative
+unset key
+set ytics nomirror
+set xtics rotate by 90 offset 1,.2 right
+set y2tics rotate by 90 offset 0,-1.5
+set y2range [0:]
+set grid ytics lt 0 lw 1 lc rgb "green"  # Pour les lignes horizontales
+set grid xtics lt 0 lw 1 lc rgb "green"  # Pour les lignes verticales
+set grid y
+set xlabel "DRIVERS NAMES" rotate by 180
+set y2label "NB ROUTES"
+set ylabel "Option -d1 : Nb routes" rotate by 90 offset 3,0 
+plot 'output.txt' using 2:xticlabels(1) notitle axes x1y2 
 
 PLOT
 
