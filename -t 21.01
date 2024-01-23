@@ -245,7 +245,6 @@ node *insert2(node *avl, inf *city) {
     else if(key < avl->city.occ) {
         avl->fg = insert2(avl->fg, city);
     }
-    }
     else if(key == avl->city.occ) {
         strcpy(avl->dataTab[avl->idx], city->ville);
         avl->occdTab[avl->idx] = city->occd;
