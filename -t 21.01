@@ -312,9 +312,9 @@ return;
 }    
     testParcours(avl->fg);
     
-    printf("MAIN : VILLE %s | OCC %d | OCCD %d | IDX %d\n", avl->city.ville, avl->city.occ, avl->city.occd, avl->
+    printf("MAIN : VILLE %s | OCC %d | OCCD %d | IDX %d\n", avl->city.ville, avl->city.occ, avl->city.occd, avl->idx);
     for(int i = 0; i < avl->idx; i++) {
-        printf("    IDX %d :    VILLE %s | OCC %d | OCCD %d\n", i, avl->dataTab[i], avl->city.occ, avl->occdTab[>
+        printf("    IDX %d :    VILLE %s | OCC %d | OCCD %d\n", i, avl->dataTab[i], avl->city.occ, avl->occdTab[i]);
     }
     
     testParcours(avl->fd);
