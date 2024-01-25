@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAXSIZE 350000 // ??
+#define MAXSIZE 3500 // ??
 
 /*
 ajouter les free
