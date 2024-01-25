@@ -3,7 +3,7 @@
 #include <string.h>
 
 #define MAXSIZE 350000 // ??
-#define IGN1 1
+#define IGN1 0
 
 /*
 ajouter les free
@@ -22,6 +22,8 @@ typedef struct node {
     int height;
     struct node *fd;
     struct node *fg;
+//int tId[2000];
+//int idxTID;
     char dataTab[MAXSIZE][60];
     int occdTab[MAXSIZE];
     int idx;
@@ -195,6 +197,7 @@ char buff[256];
 int col;
 int ct = 0 ; // 1 pour eviter town a town b
 int step;
+int tid;
 int fline = 1;
 
 /*void adjust(node *avl) {
