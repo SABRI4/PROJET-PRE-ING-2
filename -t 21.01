@@ -132,6 +132,7 @@ node *insert(node *avl, inf *city) {
 //printf("INCREASED OCC FOR  %s OLD : %d NEW : %d\n", avl->city.ville, avl->city.occ, avl->city.occ + 1);
         avl->city.occ++;
         avl->city.occd += city->occd;
+        free(avl);
     }
     
        int balance = getB(avl);
