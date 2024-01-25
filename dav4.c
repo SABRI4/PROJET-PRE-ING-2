@@ -11,6 +11,10 @@ mettre une condition de modulo sur les occurences impaires ?
 rajoiter macro pour ignorer les occ == 1 ?
 */
 
+//erreurs :
+// 2 villes pas presente dans le top 10
+// occ incorrecte pour certaines villes
+
 typedef struct info {
     char *ville;
     int occ;
