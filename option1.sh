@@ -33,7 +33,8 @@ awk -b -F';' '
 ' "$csv_file" | sort -nrk1,1 | head -n 10 > "$output_file"
 
 # Afficher le contenu du fichier de sortie
-echo "Contenu du fichier conducteur_trajets.dat :" cat "$output_file"
+echo "Contenu du fichier conducteur_trajets.dat :" 
+cat $output_file
 
 
 # Création de l'histogramme avec Gnuplot
