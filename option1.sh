@@ -15,45 +15,48 @@ csv_file="${home}/${1}"
 # Chemin complet du fichier de sortie
 output_file="${home}/conducteur_trajets.dat"
 
-# Utiliser awk pour traiter le fichier CSV
-awk -b -F';' '
+awk -F';' '
     NR > 1 {
-        # Créer une clé unique pour chaque combinaison de conducteur et de Route ID
         if (!(($6 SUBSEP $1) in unique)) {
             unique[$6 SUBSEP $1]
             count[$6]++
         }
     }
     END {
-        # Imprimer les résultats pour chaque conducteur
         for (driver in count) {
             print count[driver], driver
         }
     }
-' "$csv_file" | sort -nrk1,1 | head -n 10 > "$output_file"
+' "$csv_file" | sort -nrk1,1 | head -n 10 | awk '{ print $2, $3, $1 }' > "$output_file"
 
-# Afficher le contenu du fichier de sortie
-echo "Contenu du fichier conducteur_trajets.dat :" 
-cat $output_file
-
-
+ 
 # Création de l'histogramme avec Gnuplot
 gnuplot -persist <<-PLOT
 
-set terminal png
+set terminal png size 700,1000
 set output 'conducteurs_histogramme.png'
-set ylabel 'NB ROUTES'
-set xlabel 'DRIVERS NAMES'
-set title 'Top 10 conducteurs avec le plus de trajets'
+set ylabel 'TOP 10 CONDUCTEURS AVEC LE PLUS DE TRAJETS'
+set y2label 'NB ROUTES' offset -3,0
+set xtics font "Arial, 11" 
+set xlabel 'DRIVERS NAMES' rotate by  180 offset character 0, -11, 0
 set style data histograms
-set style fill solid 1.0 border -1
-set boxwidth 1
+set xtic rotate by 90 scale 0 offset character 0, -11, 0
+set style fill solid 0.5 border -1
+set boxwidth 0.5
+set ytics rotate by 90 
 set grid ytics
 unset yrange
-set xtics rotate by -45
+set size 0.6, 1
 set datafile separator " "
-plot "$home/conducteur_trajets.dat" using 1:xtic(sprintf("%s %s", stringcolumn(2), stringcolumn(3)))  notitle lc rgb "blue"
+set lmargin 10
+set bmargin 15
+set rmargin 0
+set tmargin 5
+plot "/home/younes/Info/conducteur_trajets.dat" using 3:xticlabels(sprintf("%s %s", stringcolumn(1), stringcolumn(2))) notitle lc rgb "blue" with boxes
 
 PLOT
+
+convert -rotate 90 conducteurs_histogramme.png  conducteurs_histogramme.png
+
 
 exit 0
