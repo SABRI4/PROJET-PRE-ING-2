@@ -1,57 +1,73 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
-typedef struct cityInfo {
-char *ville;
-int asc;
-int occ; 
-int occd;
+#define MAXSIZE 350000 // ??
+#define IGN1 1
+
+/*
+ajouter les free city et avl2
+enlever fonctions inutiles
+commentaires
+*/
+
+typedef struct info {
+    char *ville;
+    int occ;
+    int occd;
 }inf;
 
-typedef struct avlNode {
-int key;
-struct cityInfo inf;
-int height;
-int gocc;
-struct avlNode *fg;
-struct avlNode *fd;
-inf *tabAsc;
-int *tabOccd
-int tabSize;
+typedef struct node {
+    struct info city;
+    int height;
+    struct node *fd;
+    struct node *fg;
+    int TID[2000];
+    int idxTID;
+    char dataTab[MAXSIZE][60];
+    int occdTab[MAXSIZE];
+    int idx;
 }node;
 
+int counter;
 
-node *newNode(inf *city) {
-node *new = malloc(sizeof(node));
-if(new != NULL) {
-new->inf = *city;
-new->gocc = city->occ;
-new->tabSize = 1;
-new->height =  1;
-new->fg = NULL;
-new->fd = NULL;
-return new;
-}
-}
-inf *newInfo(char *city, int occd) {
-inf *new = malloc(sizeof(inf));
-if(new != NULL) {
-strcpy(new->ville, city);
-new->asc = getAsc(city);
-new->occd = occd;
-new->occ = 1;
-return new;
-}
-}
-
-int getAsc(char *city) {
-    int length = sizeof(city) - 1; 
-    for (int i = 0; i < length; i++) {
-        int asciiValue = (int)city[i];
+inf *newInfo(char *ville, int occd) {
+    inf *new = malloc(sizeof(inf));
+    if(new != NULL) {
+        new->ville = malloc(60*sizeof(char));
+        strcpy(new->ville, ville);
+        new->occd = occd;
+        new->occ = 0;
+        return new;
     }
-    return asciiValue;
+    else {
+        printf("newInfo is NULL for %s\n", ville);
+    }
+}
+node *newNode(inf *city) {
+    node *new = malloc(sizeof(node));
+    if(new != NULL) {
+new->city = *city;
+        new->height = -1;
+        new->fd = NULL;
+        new->fg = NULL;
+        /*for (int i = 0; i < MAXSIZE; i++) {
+            new->dataTab[i][0] = '\0';  // Set the first character to null terminator, indicating an empty string
+            new->occdTab[i] = 0;
+
+        }*/
+        new->idx = 0;// 0 ou 1?
+        return new;
+    }
+        else {
+        printf("newNode is NULL for %s\n", city->ville);
+        exit(1);
+    }
+}
+
+int stringComp(char *s1, char*s2) {
+
+        return strcmp(s1, s2);
 }
 
 int max(int a, int b) {
@@ -78,6 +94,38 @@ return getH(avl->fg) - getH(avl->fd);
 }
 
 node *RRotate(node *y) {
+    node *x = y->fg;
+    node *T2 = x->fd;
+
+    // Perform rotation
+    x->fd = y;
+    y->fg = T2;
+
+    // Update heights
+    y->height = 1 + max(getH(y->fg), getH(y->fd));
+    x->height = 1 + max(getH(x->fg), getH(x->fd));
+
+    return x;  // New root
+}
+
+node *LRotate(node *x) {
+    node *y = x->fd;
+    node *T2 = y->fg;
+
+    // Perform rotation
+    y->fg = x;
+    x->fd = T2;
+
+    // Update heights
+    x->height = 1 + max(getH(x->fg), getH(x->fd));
+    y->height = 1 + max(getH(y->fg), getH(y->fd));
+
+    return y;  // New root
+}
+
+
+/*
+node *RRotate(node *y) {
 node *x = y->fg;
 node *T2 = x->fd;
 
@@ -101,56 +149,94 @@ x->height = 1 + max(getH(x->fg), getH(x->fd));
 y->height = 1 + max(getH(y->fg), getH(y->fd));
 
 return y;
+}*/
+
+int compID(int tab[2000], int TID, int size) {
+    for(int i = 0; i < size; i++) {
+        if(tab[i] == TID) {
+            return 0;
+        }
+    }
+    return TID;
 }
 
-node *insert(node *avl, inf *city) {
+node *insert(node *avl, inf *city, int TID) {
     if(avl == NULL) {
         return newNode(city);
     }
     
-    int key = getAsc(city->ville);
+    int key = stringComp(city->ville, avl->city.ville);
     
-    if(key > avl->inf.asc) {
-        insert(avl->fd, city);
-    }
-    else if(key < avl->inf.asc) {
-        insert(avl->fg, city);
-    }
-    else if(key == avl->inf.asc) {
-        //cas d'égalité
-        avl->inf.occ++;
-        if(occd) {avl->inf.occd++;}
-    }
-    
-    int balance = getB(avl);
 
+    if(key > 0) {
+        avl->fd = insert(avl->fd, city, TID);
+    }
+    else if(key < 0) {
+        avl->fg = insert(avl->fg, city, TID);
+    }
+    else if(key == 0) {
+//printf("INCREASED OCC FOR  %s OLD : %d NEW : %d\n", avl->city.ville, avl->city.occ, avl->city.occ + 1);
+
+        if(compID(avl->TID, TID, avl->idxTID) == 0) { // une seule fois une ville par trajet
+        free(city->ville);
+        free(city);
+        return avl;           
+        }
+        else {
+        avl->TID[avl->idxTID] = TID;
+            avl->idxTID++;
+
+        avl->city.occ++;
+        avl->city.occd += city->occd;
+        free(city->ville);
+        free(city);
+}
+    }
+    
+       int balance = getB(avl);
+if(avl->fg || avl->fd == NULL) {
+return avl;
+}
+
+if(avl->fg != NULL) {
 //ici rotations
-if (balance > 1 && key < avl->fg->inf.occ) {
+if (balance > 1 && key < avl->fg->city.occ) {
 return RRotate(avl);
 }
-
-if (balance < -1 && key > avl->fd->inf.occ){
-return LRotate(avl);
 }
 
-if (balance > 1 && key > avl->fg->inf.occ) {
+if(avl->fd != NULL) {
+if (balance < -1 && key > avl->fd->city.occ){
+return LRotate(avl);
+}
+}
+if(avl->fg != NULL) {
+if (balance > 1 && key > avl->fg->city.occ) {
 avl->fg = LRotate(avl->fg);
 return RRotate(avl);
 }
+}
 
-if (balance < -1 && key < avl->fd->inf.occ) {
+if(avl->fd !=  NULL) {
+if (balance < -1 && key < avl->fd->city.occ) {
 avl->fd = RRotate(avl->fd);
 return LRotate(avl);
 }
-if (balance > 1 && key > avl->fg->inf.occ) {
+}
+if(avl->fg != NULL) {
+if (balance > 1 && key > avl->fg->city.occ) {
 avl->fg = LRotate(avl->fg);
 return RRotate(avl);
 }
+}
 
-if (balance < -1 && key < avl->fd->inf.occ) {
+if(avl->fd != NULL) {
+if (balance < -1 && key < avl->fd->city.occ) {
 avl->fd = RRotate(avl->fd);
 return LRotate(avl);
 }
+}
+
 
 return avl;
 }
@@ -158,12 +244,31 @@ return avl;
 node * proCsv(char *csv, int row, node *avl) {
 FILE *file = fopen(csv, "r");
 if( file == NULL) {printf("file NULL\n"); exit(1);}
-
 char buff[256];
 int col;
 int ct = 0 ; // 1 pour eviter town a town b
 int step;
+int tid;
 int fline = 1;
+
+/*void adjust(node *avl) {
+    if(avl == NULL) {
+        return;
+    }
+    
+    adjust(avl->fg);
+
+        int occ = avl->city.occ;
+        int occd = avl->city.occd;
+
+        if(avl->city.occ > 1) {
+    int nocc = (occ - occd)/2;
+    nocc += occd;
+    avl->city.occ = nocc;        
+    }
+    adjust(avl->fd);
+    
+}*/
 
 while(fgets(buff, sizeof(buff), file) != NULL && ct < row) {
 char *token = strtok(buff, ";");
@@ -178,19 +283,22 @@ continue;
 
 while(token != NULL && col <= 6) {
 //printf("inside while 1 || COL = %d\n", col);
+if(col == 1) {
+    tid = atoi(token);
+}
 if(col == 2) {
 step = atoi(token);
 }
 else if(col == 3 || col == 4) {
 if(step == 1 && col == 3) {//logique d'ajt en cas de ville1 == épart
-//printf("bef process 1, 1\n");
 inf *city = newInfo(token, 1);
-avl = insert(avl, city);
+//printf("%s occ at creation : %d\n", city->ville, city->occ);
+avl = insert(avl, city, tid);
 }
 else {
-//printf("bef process 1, 0\n");
-inf *city = newNode(token, 0);
-avl = insert(avl, city);
+inf *city = newInfo(token, 0);
+//printf("%s occ at creation : %d\n", city->ville, city->occ);
+avl = insert(avl, city, tid);
 }
 }
 token = strtok(NULL, ";");
@@ -203,120 +311,224 @@ fclose(file);
 return avl;
 }
 
-node *insert2(node *avl, inf *city) {
-    if(avl == NULL) {
-        return newNode(city->ville);
-    }
-    
-    int key = city->occ;
-    
-        if(key > avl->gocc) {
-        insert(avl->fd, city);
-    }
-    else if(key < avl->gocc) {
-        insert(avl->fg, city);
-    }
-    else if(key == gocc) {
-        //cas de valeur occ déja présente
-        //avl tabsize = 0
-        avl->tabAsc[avl->tabSize] = city;
-        avl->tabOccd[avl->tabSize] = city->occd;
-        avl->tabSize++;
-    }
-    
-        int balance = getB(avl);
 
+node *insert2(node *avl, inf *city) {
+    if(avl == NULL) { 
+        return newNode(city);
+    }
+
+    int key = city->occ;
+
+    if(key > avl->city.occ) {
+avl->fd = insert2(avl->fd, city);
+    }
+    else if(key < avl->city.occ) {
+        avl->fg = insert2(avl->fg, city);
+
+    }
+    else if(key == avl->city.occ) {        
+strcpy(avl->dataTab[avl->idx], city->ville);
+        avl->occdTab[avl->idx] = city->occd;
+        avl->idx++;
+    }
+    
+           int balance = getB(avl);
 //ici rotations
-if (balance > 1 && key < avl->fg->inf.occ) {
+if (balance > 1 && key < avl->fg->city.occ) {
 return RRotate(avl);
 }
 
-if (balance < -1 && key > avl->fd->inf.occ){
+if (balance < -1 && key > avl->fd->city.occ){
 return LRotate(avl);
 }
 
-if (balance > 1 && key > avl->fg->inf.occ) {
+if (balance > 1 && key > avl->fg->city.occ) {
 avl->fg = LRotate(avl->fg);
 return RRotate(avl);
 }
 
-if (balance < -1 && key < avl->fd->inf.occ) {
+if (balance < -1 && key < avl->fd->city.occ) {
 avl->fd = RRotate(avl->fd);
 return LRotate(avl);
 }
-if (balance > 1 && key > avl->fg->inf.occ) {
+if (balance > 1 && key > avl->fg->city.occ) {
 avl->fg = LRotate(avl->fg);
 return RRotate(avl);
 }
 
-if (balance < -1 && key < avl->fd->inf.occ) {
+if (balance < -1 && key < avl->fd->city.occ) {
 avl->fd = RRotate(avl->fd);
 return LRotate(avl);
 }
 
 return avl;
-    
 }
 
-node *parseTable(node *avl, node *avl2) {
-    if(avl == NULL) {
+node *parseAvl(node *avl1, node **avl2) {
+    if(avl1 == NULL) {
         return NULL;
     }
-    parseTable(avl->fg);
-    avl2 = insert2(avl2, avl->inf);
-    parseTable(avl->fd);
+   parseAvl(avl1->fg, avl2);
+   /* if(strcmp(avl1->city.ville, "ANDILLY") == 0 || (strcmp(avl1->city.ville, "BEAULIEU") == 0)) {
+printf("%s -> %d | %d\n", avl1->city.ville, avl1->city.occ, avl1->city.occd);
+exit(1);
+}*/
+        if((avl1->city.occ > 1 &&  IGN1) || IGN1 == 0) {
+
+*avl2 = insert2(*avl2, &avl1->city);
+}
+   parseAvl(avl1->fd, avl2);
     
-    return avl2;
+    return *avl2;
+}
+void freeAvl1(node *avl) {
+if(avl == NULL) {
+return;
+}
+freeAvl1(avl->fg);
+freeAvl1(avl->fd);
+
+free(avl);
+
 }
 
-node *adjust(node *avl) { // a faire sur le premier avl
-    adjust(avl->fg);
-    
-    int occd = avl->inf.occd;
-    int occ = avl->inf.occ;
-    
-    int nocc = (occ - occd)/2;
-    nocc += occd;
-    avl->inf.occ = nocc;
-    
-    adjust(avl->fd);
-
-    
-    return avl;
+void unkt2(node *avl) {
+if(avl == NULL) {
+return;
+}
+if(strcmp(avl->city.ville, "ANDILLY") == 0 || strcmp(avl->city.ville, "BEAULIEU") == 0) {
+printf("%s FOUND(UNKT2) OCC %d\n", avl->city.ville, avl->city.occ);
+exit(1);
 }
 
-void parcours(node *avl) {
+unkt2(avl->fg);
+unkt2(avl->fd);
+
+}
+
+void unkt(node *avl) {
+if(avl == NULL) {
+return;
+}
+if(strcmp(avl->city.ville, "ANDILLY") == 0 || strcmp(avl->city.ville, "BEAULIEU") == 0) {
+printf("%s FOUND\n", avl->city.ville);
+exit(1);
+}
+for(int i = 0; i < avl->idx; i++) {
+if(strcmp(avl->dataTab[i], "ANDILLY") == 0 || strcmp(avl->dataTab[i], "BEAULIEU") == 0) {
+printf("%s FOUND\n", avl->dataTab[i]);
+exit(1);
+}
+}
+unkt(avl->fg);
+unkt(avl->fd);
+
+}
+
+void parcours(node *avl){
+if(avl == NULL) {
+return;
+}
+    parcours(avl->fd);    
+        if(counter < 10) {
+        printf("%d : VILLE %s | OCC %d | OCCD %d\n", counter, avl->city.ville, avl->city.occ, avl->city.occd);
+        counter++; }    
+        for(int i = 0; i < avl->idx; i++) {
+        if(counter < 10) {
+        printf("%d : VILLE %s | OCC %d | OCCD %d\n", counter, avl->dataTab[i], avl->city.occ, avl->occdTab[i]);
+        counter++;
+        }
+        }    
+    
     parcours(avl->fg);
-    
-    printf("main city : %s | occNode : %d | occInf : %d | main occd %d\n"; avl->inf.city, avl->gocc, avl->city.occ, avl->city.occd);
-    for(int i = 0; i < avl->tabSize; i++) {
-        printf("idx : %d | city : %s | occd : %d\n", i, avl->tabAsc[i].ville, avl->tabOccd[i]);
+}
+
+void testParcours(node *avl) {
+        if(avl == NULL) {
+return;
+}   
+
+    testParcours(avl->fg);
+
+    printf("MAIN : VILLE %s | OCC %d | OCCD %d | IDX %d | BAL %d\n", avl->city.ville, avl->city.occ, avl->city.occd, avl->idx, getB(avl));
+    for(int i = 0; i < avl->idx; i++) {
+        printf("    IDX %d :    VILLE %s | OCC %d | OCCD %d\n", i, avl->dataTab[i], avl->city.occ, avl->occdTab[i]);
     }
     
-    parcours(avl->fd);
+    testParcours(avl->fd);
+}
+
+void adjust(node *avl) {
+    if(avl == NULL) {
+        return;
+    }
     
+    adjust(avl->fg);
+
+        int occ = avl->city.occ;
+        int occd = avl->city.occd;
+
+        if(occ > 1) {
+        printf("ADJUSTING %s \n", avl->city.ville);
+    int nocc = (occ - occd)/2;
+    nocc += occd;
+if(nocc > 0) {
+    avl->city.occ = nocc;        
+}
+else {
+printf("nocc ! > 0\n");
+exit(1);
+}    
+}
+    adjust(avl->fd);
+    
+} 
+void testP2(node *avl) {
+if(avl == NULL) {
+return;
+}
+        printf("MAIN : VILLE %s | OCC %d | OCCD %d | IDX %d | BAL %d\n", avl->city.ville, avl->city.occ, avl->city.occd, avl->idx, getB(avl));
+    for(int i = 0; i < avl->idx; i++) {
+        printf("    IDX %d :    VILLE %s | OCC %d | OCCD %d\n", i, avl->dataTab[i], avl->city.occ, avl->occdTab[i]);
+    }
+printf("rec fg\n");
+testP2(avl->fg);
+printf("rec fd\n");
+testP2(avl->fd);
 }
 
 int main(int argc, char *argv[])
-{
-int row = 0;
-char csv[50];
-
-node *avl = NULL;
-node *avl2 = NULL;
-
-if(argc < 2) {
-printf("USAGE : ./file <rows> <csv_file>\n");
-exit(1);
-}
-else {
-row = atoi(argv[1]);
-strcpy(csv, argv[2]);
-}
-
-avl = proCsv(csv, row, avl);
-avl = adjust(avl);
-avl2 = parseTable(avl, avl2);
+{   
+    int row = 0;
+    char csv[50];
+    if(argc < 2) {
+        printf("usage : ./file <rows> <csv file>\n");
+    }
+    else {
+        row = atoi(argv[1]);
+        strcpy(csv, argv[2]);
+    }
+    node *avl1 = NULL;
+    node *avl2 = NULL;
+   printf("launch proCsv\n");
+    avl1 = proCsv(csv, row, avl1);
+    printf("launch adjustement\n");
+        printf("no adjust\n");    
+//adjust(avl1);
+    printf("launch parseAvl\n");
+//unkt2(avl1);    
+avl2 = parseAvl(avl1, &avl2);
+freeAvl1(avl1);    
+if(avl2 == NULL){printf("avl2 = NULL\n");exit(1);}
+//unkt(avl2);        
+printf("launch test parcours\n");
+    //testParcours(avl2);
+counter = 0;
 parcours(avl2);
-
+//printf("launch test P2\n");
+//testP2(avl2);
+//printf("MAIN 1 %s %d\n", avl2->city.ville, avl2->city.occ);
+//printf("AVL FD BASE : %s %d\n", avl2->fd->fd->city.ville, avl2->fd->fd->city.occ);
+    //printf("launch Parcours\n");
+    //parcours(avl2, 0, -1);
 }
