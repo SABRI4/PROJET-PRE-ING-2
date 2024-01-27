@@ -275,7 +275,6 @@ char *token = strtok(buff, ";");
 col = 1;
 //printf("-------------------------------------ROW %d----------------------\n", ct);// A DELETE
 if(fline) {
-printf("skipping fline\n");
 fline = 0;
 ct++;
 continue;
@@ -306,7 +305,6 @@ col++;
 }
 ct++;
 }
-printf("fclose file\n");
 fclose(file);
 return avl;
 }
@@ -431,11 +429,11 @@ return;
 }
     parcours(avl->fd);    
         if(counter < 10) {
-        printf("%d : VILLE %s | OCC %d | OCCD %d\n", counter, avl->city.ville, avl->city.occ, avl->city.occd);
+        printf("%d |%s;|OCC|%d;|OCCD| %d\n", counter, avl->city.ville, avl->city.occ, avl->city.occd);
         counter++; }    
         for(int i = 0; i < avl->idx; i++) {
         if(counter < 10) {
-        printf("%d : VILLE %s | OCC %d | OCCD %d\n", counter, avl->dataTab[i], avl->city.occ, avl->occdTab[i]);
+        printf("%d |%s|OCC|%d|OCCD| %d\n", counter, avl->dataTab[i], avl->city.occ, avl->occdTab[i]);
         counter++;
         }
         }    
@@ -510,25 +508,18 @@ int main(int argc, char *argv[])
     }
     node *avl1 = NULL;
     node *avl2 = NULL;
-   printf("launch proCsv\n");
-    avl1 = proCsv(csv, row, avl1);
-    printf("launch adjustement\n");
-        printf("no adjust\n");    
+    avl1 = proCsv(csv, row, avl1); 
 //adjust(avl1);
-    printf("launch parseAvl\n");
 //unkt2(avl1);    
 avl2 = parseAvl(avl1, &avl2);
 freeAvl1(avl1);    
 if(avl2 == NULL){printf("avl2 = NULL\n");exit(1);}
 //unkt(avl2);        
-printf("launch test parcours\n");
     //testParcours(avl2);
 counter = 0;
 parcours(avl2);
-//printf("launch test P2\n");
 //testP2(avl2);
 //printf("MAIN 1 %s %d\n", avl2->city.ville, avl2->city.occ);
 //printf("AVL FD BASE : %s %d\n", avl2->fd->fd->city.ville, avl2->fd->fd->city.occ);
-    //printf("launch Parcours\n");
     //parcours(avl2, 0, -1);
 }
