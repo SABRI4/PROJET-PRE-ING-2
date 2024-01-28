@@ -6,6 +6,10 @@
 #define MACRO_LOWSAMPLE 0 // en cas de petit nb de row le max = le min car pas de plusieurs etap
 #define MACRO_PRINTROW 0 //permet de print les ----ROW---- ou non
 
+/*
+free traj / avl / avl2
+commentaires
+
 typedef struct trajetInfo {
 int id;
 int etap;
@@ -23,6 +27,7 @@ struct avlNode *fg;
 struct avlNode *fd;
 }node;
 
+int counter;
 
 node *newNode(inf *dist) {
 node *new = malloc(sizeof(node));
@@ -193,7 +198,6 @@ printf("fclose file\n");
 fclose(file);
 return avl;
 }
-
 node *insert(node *avl, inf *dist) {
 //printf("INSERT CALL WITH KEY %f | MAX %f(already good max)\n", dist->tot, dist->max);
 if(avl == NULL){
@@ -245,7 +249,7 @@ return avl;
 
 }
 
-node *parseTable(node *avl, node *avl2) {
+node *parseTable(node **avl, node *avl2) {
 if(avl2 == NULL) {
 return NULL;
 }
@@ -253,11 +257,11 @@ parseTable(avl, avl2->fg);
 
 //printf("PARSETABLE AVL1 CALL %f\n", avl2->traj.tot);
 inf *new = &avl2->traj;
-avl = insert(avl, new);
+*avl = insert(*avl, new);
 
 parseTable(avl, avl2->fd);
 
-return avl;
+return *avl;
 }
 
 node *adjust(node *avl) {
@@ -285,16 +289,20 @@ void parcours(node *avl) { // inverser l'ordre (affichage du terminal trop petit
 if(avl == NULL) {
 return;
 }
-parcours(avl->fg);
-
-printf("ID %d | TOTAL %f | MOYENNE %f | MAX %f | MIN %f | ETAPE %d | BAL %d\n", avl->traj.id, avl->traj.tot, avl->traj.moy, avl->traj.max, avl->traj.min, avl->traj.etap, getB(avl));
-
 parcours(avl->fd);
+
+if(counter < 50) {
+printf("%d |ID|%d|TOTAL|%f|MOYENNE|%f|ETAPES|%d|MAX|%f|MIN|%f\n", counter, avl->traj.id, avl->traj.tot, avl->traj.moy, avl->traj.etap, avl->traj.max, avl->traj.min);
+//printf("ID %d | TOTAL %f | MOYENNE %f | MAX %f | MIN %f | ETAPE %d | BAL %d\n", avl->traj.id, avl->traj.tot, avl->traj.moy, avl->traj.max, avl->traj.min, avl->traj.etap, getB(avl));
+counter++;
+}
+
+parcours(avl->fg);
 }
 
 int main(int argc, char *argv[]) {
 
-clock_t start_time = clock();
+//clock_t start_time = clock();
 int row = 0;
 char csv[50];
 
@@ -314,12 +322,13 @@ avl2 = proCsv(avl2, csv, row);
 printf("launch adjust\n");
 avl2 = adjust(avl2); // crée les moyennes + crée les totaux
 printf("launch parseTable\n");
-avl = parseTable(avl, avl2);
-clock_t time1 = clock();
+avl = parseTable(&avl, avl2);
+//clock_t time1 = clock();
 printf("launch parcours\n");
+counter = 0;
 parcours(avl);
-clock_t time2 = clock();
-double elap1 = ((double)(time2 - start_time))/CLOCKS_PER_SEC;
-double elap2 = ((double)(time1 - start_time))/CLOCKS_PER_SEC;
-printf("EXECTIME : TOTAL = %f\nEXECTIME : REAL = %f\n", elap1, elap2);
+//clock_t time2 = clock();
+//double elap1 = ((double)(time2 - start_time))/CLOCKS_PER_SEC;
+//double elap2 = ((double)(time1 - start_time))/CLOCKS_PER_SEC;
+//printf("EXECTIME : TOTAL = %f\nEXECTIME : REAL = %f\n", elap1, elap2);
 }
