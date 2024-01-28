@@ -36,7 +36,7 @@ gnuplot -persist <<-PLOT
 set terminal png size 700,1000
 set output 'conducteurs_histogramme.png'
 set ylabel 'TOP 10 CONDUCTEURS AVEC LE PLUS DE TRAJETS'
-set y2label 'NB ROUTES' offset -3,0
+set y2label 'NB ROUTES' offset 3,0
 set xtics font "Arial, 11" 
 set xlabel 'DRIVERS NAMES' rotate by  180 offset character 0, -11, 0
 set style data histograms
@@ -45,7 +45,7 @@ set style fill solid 0.5 border -1
 set boxwidth 0.5
 set ytics rotate by 90 
 set grid ytics
-unset yrange
+set yrange [0:*]
 set size 0.6, 1
 set datafile separator " "
 set lmargin 10
@@ -58,5 +58,7 @@ PLOT
 
 convert -rotate 90 conducteurs_histogramme.png  conducteurs_histogramme.png
 
+
+exit 0
 
 exit 0
