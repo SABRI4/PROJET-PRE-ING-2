@@ -28,8 +28,7 @@ check_temp_folder() {
     fi
 }
 
-# Vérification de la présence du dossier
-images
+# Vérification de la présence du dossier images
 check_images_folder() {
     if [ ! -d "images" ]; then
         echo "Création du dossier images"
