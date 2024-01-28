@@ -20,7 +20,7 @@ gnuplot -persist <<PLOT
 set terminal png size 700,1000
 set output 'option2graph.png'
 set ylabel 'OPTION -D2'
-set y2label 'DISTANCE (KM)' offset -3,0
+set y2label 'DISTANCE (KM)' offset 3,0
 set xlabel 'DISTANCE (KM)' rotate by  180 offset character 0, -11, 0
 set ytics rotate by 90 
 set xtics font "Arial, 11" 
@@ -29,7 +29,7 @@ set style data histograms
 set style fill solid 0.5 border -1
 set boxwidth 1
 set grid ytics
-unset yrange
+set yrange [0:*]
 set size 0.6, 1
 set datafile separator " "
 set lmargin 10
