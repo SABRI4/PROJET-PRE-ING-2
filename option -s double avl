@@ -9,6 +9,7 @@
 /*
 free traj / avl / avl2
 commentaires
+*/
 
 typedef struct trajetInfo {
 int id;
