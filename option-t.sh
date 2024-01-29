@@ -2,16 +2,17 @@
 
 # Vérification de la présence de deux arguments
 if [ $# -ne 2 ]; then
-    echo "Usage: $0 <executable> <csv_file>"
+    echo "Usage: $0 <C PROGRAM> <csv_file>"
     exit 1
 fi
 
 executable=$1
 csv_file=$2
 
+gcc $1 -o code
 
 # Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
-$executable 6000000 $csv_file > temp.dat
+./code 6000000 $csv_file > temp.dat
 
 # Utilisation de awk pour transformer les données en un format attendu par Gnuplot
 awk -F '|' '{print $2, $4, $6}' temp.dat > option-t.dat
