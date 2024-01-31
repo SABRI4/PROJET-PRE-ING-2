@@ -63,10 +63,10 @@ case "$1" in
         ./option2.sh $2
         ;;
     -t)
-        ./optiont.sh $2
+        ./optiont.sh opts.c.sh $2
         ;;
     -s)
-        ./options.sh $2
+        ./options.sh opts.c $2
         ;;
     -l)
         ./optionLV4.sh $2
