@@ -12,10 +12,10 @@ csv_file=$2
 gcc $1 -o code
 
 # Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
-./code 6000000 $csv_file > temp.dat
+./code 6000000 $csv_file > temp/temp.dat
 
 # Utilisation de awk pour transformer les données en un format attendu par Gnuplot
-awk -F '|' '{print $2, $4, $6}' temp.dat > option-t.dat
+awk -F '|' '{print $2, $4, $6}' temp/temp.dat > data/option-t.dat
 # Suppression du fichier temporaire
 rm temp.dat
 
@@ -26,8 +26,8 @@ if [ ! -s option-t.dat ]; then
 fi
 
 gnuplot -persist <<-EOF
-    set terminal png size 1000,800  
-    set output 'option-t_graph.png'
+    set terminal png size 1000,800
+    set output 'images/option-t_graph.png'
     set ylabel 'NB ROUTES'
     set xlabel 'TOWN NAMES'
     set title 'OPTION-T'
@@ -43,8 +43,6 @@ gnuplot -persist <<-EOF
     set bmargin 9   # Adjust bottom margin
     set grid y
     set yrange [0:3500]  # Set y-axis range
-    plot 'option-t.dat' using 2:xticlabels(1) title 'Town Routes' lc rgb "blue", '' using 3 title 'First Town' lc rgb "skyblue"
-EOF
+    plot 'data/option-t.dat' using 2:xticlabels(1) title 'Town Routes' lc rgb "blue", '' us>EOF
 
 exit 0
-
