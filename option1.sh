@@ -15,7 +15,7 @@ csv_file=$1
 # Chemin complet du fichier de sortie
 output_file="data/conducteur_trajets.dat"
 
-awk -F';' '
+awk -b -F';' '
     NR > 1 {
         if (!(($6 SUBSEP $1) in unique)) {
             unique[$6 SUBSEP $1]
