@@ -3,8 +3,6 @@
 #depart chrono
 exec_timestart_l=$(date +%s.%N)
 
-#!/bin/bash
-
 # Vérifier si le fichier CSV est fourni en argument
 if [ $# -eq 0 ]; then
     echo "Usage: $0 <csv_file>"
