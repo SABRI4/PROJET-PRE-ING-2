@@ -49,7 +49,9 @@ check_images_folder() {
         echo "Le dossier images existe déjà."
     fi
 }
-
+check_temp_folder
+check_data_folder
+check_images_folder
 # Vérification du nombre d'arguments
 if [ "$#" -ne 2 ]; then
     echo "Erreur: il y a trop d'argumentsou pas assez"
