@@ -174,7 +174,6 @@ if(MACRO_PRINTROW){
 printf("-------------------------------------ROW %d----------------------\n", ct);// A DELETE
 }
 if(fline) {
-printf("skipping fline\n"); //inutile de traiter town A town B
 fline = 0;
 ct++;
 continue;
@@ -195,7 +194,6 @@ col++;
 }
 ct++;
 }
-printf("fclose file\n");
 fclose(file);
 return avl;
 }
@@ -293,7 +291,7 @@ return;
 parcours(avl->fd);
 
 if(counter < 50) {
-printf("%d |ID|%d|TOTAL|%f|MOYENNE|%f|ETAPES|%d|MAX|%f|MIN|%f\n", counter, avl->traj.id, avl->traj.tot, avl->traj.moy, avl->traj.etap, avl->traj.max, avl->traj.min);
+printf("%d |ID|%d;|TOTAL|%f;|MOYENNE|%f;|ETAPES|%d|MAX|%f;|MIN|%f\n", counter, avl->traj.id, avl->traj.tot, avl->traj.moy, avl->traj.etap, avl->traj.max, avl->traj.min);
 //printf("ID %d | TOTAL %f | MOYENNE %f | MAX %f | MIN %f | ETAPE %d | BAL %d\n", avl->traj.id, avl->traj.tot, avl->traj.moy, avl->traj.max, avl->traj.min, avl->traj.etap, getB(avl));
 counter++;
 }
@@ -318,14 +316,10 @@ else {
 row = atoi(argv[1]);
 strcpy(csv, argv[2]);
 }
-printf("launch proCsv\n");
 avl2 = proCsv(avl2, csv, row);
-printf("launch adjust\n");
 avl2 = adjust(avl2); // crée les moyennes + crée les totaux
-printf("launch parseTable\n");
 avl = parseTable(&avl, avl2);
 //clock_t time1 = clock();
-printf("launch parcours\n");
 counter = 0;
 parcours(avl);
 //clock_t time2 = clock();
