@@ -7,7 +7,6 @@ chmod +x option1.sh
 chmod +x option2.sh
 chmod +x options.sh
 chmod +x optiont.sh
-
 # Fonction pour afficher l'aide
 print_help() {
     echo "Usage: $0 -d1 | -d2 | -t | -s | -l <FILE>"
@@ -34,6 +33,7 @@ check_temp_folder() {
 check_data_folder() {
     if [ ! -e "data" ]; then
         echo "Création du dossier data"
+        chmod +w ..
         mkdir data
     else
         echo "Le dossier data existe déjà."
