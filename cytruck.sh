@@ -18,9 +18,19 @@ print_help() {
     echo "  -l       Appelle le script optionLV4.sh"
 }
 
+# Vérification de la présence du dossier data
+check_data_folder() {
+    if [ ! -e "data" ]; then
+        echo "Création du dossier data"
+        mkdir data
+    else
+        echo "Le dossier data existe déjà."
+    fi
+}
+
 # Vérification de la présence du dossier temp
 check_temp_folder() {
-    if [ ! -d "temp" ]; then
+    if [ ! -e "temp" ]; then
         echo "Création du dossier temp"
         mkdir temp
     else
@@ -30,7 +40,7 @@ check_temp_folder() {
 
 # Vérification de la présence du dossier images
 check_images_folder() {
-    if [ ! -d "images" ]; then
+    if [ ! -e "images" ]; then
         echo "Création du dossier images"
         mkdir images
     else
@@ -39,7 +49,7 @@ check_images_folder() {
 }
 
 # Vérification du nombre d'arguments
-if [ "$#" -lt 2 ]; then
+if [ "$#" -ne 2 ]; then
     echo "Erreur: Le fichier CSV en argument est manquant."
     print_help
     exit 1
