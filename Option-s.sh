@@ -24,6 +24,7 @@ if [ ! -s option-s.dat ]; then
     echo "Erreur : Le fichier de données est vide ou n'existe pas."
     exit 2
 fi
+cat option-s.dat
 
 # Script Gnuplot
 gnuplot -persist <<-EOF
