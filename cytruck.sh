@@ -92,8 +92,5 @@ case "$2" in
         ;;
 esac
 
-# Vérification des dossiers temp et images
-check_data_folder
-check_images_folder
 
 echo "Le script a été exécuté avec succès."
