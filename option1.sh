@@ -59,8 +59,7 @@ set lmargin 10
 set bmargin 15
 set rmargin 0
 set tmargin 5
-plot "$output_file" using 3:xticlabels(sprintf("%s %s", stringcolumn(1), stringcolumn(2))) >
-
+plot "$output_file" using 3:xticlabels(sprintf("%s %s", stringcolumn(1), stringcolumn(2))) notitle lc rgb "blue" with boxes
 PLOT
 
 convert -rotate 90 images/Option_D1_graph.png  images/Option_D1_graph.png
