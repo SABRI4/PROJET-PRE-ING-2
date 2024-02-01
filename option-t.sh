@@ -16,13 +16,13 @@ lines=$(wc -l $2)
 # Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
 if [ ! -e progc/optt ] ;then
 cd progc/
-make optt
-cd -
+make coptt
+cd ..
 ./optt $lines $csv_file > temp/temp.dat
 elif [ -e progc/optt ] ;then
 cd progc/
 ./optt $lines $csv_file > temp/temp.dat
-cd -
+cd ..
 fi
 
 # Utilisation de awk pour transformer les données en un format attendu par Gnuplot
