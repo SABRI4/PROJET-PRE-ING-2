@@ -41,7 +41,7 @@ echo "Temps d'exécution total du script : $exec_timetotal_1 secondes"
 gnuplot -persist <<-PLOT
 
 set terminal png size 700,1000
-set output 'images/conducteurs_histogramme.png'
+set output 'images/Option_D1_graph.png'
 set ylabel 'TOP 10 CONDUCTEURS AVEC LE PLUS DE TRAJETS'
 set y2label 'NB ROUTES' offset 3,0
 set xtics font "Arial, 11"
@@ -63,6 +63,6 @@ plot "$output_file" using 3:xticlabels(sprintf("%s %s", stringcolumn(1), stringc
 
 PLOT
 
-convert -rotate 90 images/conducteurs_histogramme.png  images/conducteurs_histogramme.png
+convert -rotate 90 images/Option_D1_graph.png  images/Option_D1_graph.png
 
 exit 0
