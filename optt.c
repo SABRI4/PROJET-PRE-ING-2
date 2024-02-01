@@ -1,41 +1,13 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "optt.h"
 
 #define MAXSIZE 350000 // ??
 #define IGN1 1
 
-/*
-ajouter les free
-mettre une condition de modulo sur les occurences impaires ?
-rajoiter macro pour ignorer les occ == 1 ?
-*/
-
-//erreurs :
-// 2 villes pas presente dans le top 10
-// occ incorrecte pour certaines villes
-
-typedef struct info {
-    char *ville;
-    int occ;
-    int occd;
-}inf;
-
-typedef struct node {
-    struct info city;
-    int height;
-    struct node *fd;
-    struct node *fg;
-    int TID[2000];
-    int idxTID;
-    char dataTab[MAXSIZE][60];
-    int occdTab[MAXSIZE];
-    int idx;
-}node;
-
 int counter;
 
-inf *newInfo(char *ville, int occd) {
+
+//création d'une structure pour chaque ville, occ : occurence de chaque ville, occd : occurence où la ville est une ville de départ.
+inf *newInfo(char *ville, int occd) { 
     inf *new = malloc(sizeof(inf));
     if(new != NULL) {
         new->ville = malloc(60*sizeof(char));
@@ -48,6 +20,8 @@ inf *newInfo(char *ville, int occd) {
         printf("newInfo is NULL for %s\n", ville);
     }
 }
+
+//création d'un noeud d'avl, dataTab permet de stocker les noms des villes qui ont la meme occurence que d'autre ville, ce qui permet de régler la question des doublons dans un avl
 node *newNode(inf *city) {
     node *new = malloc(sizeof(node));
     if(new != NULL) {
@@ -127,6 +101,8 @@ node *LRotate(node *x) {
 
     return y;  // New root
 }
+
+//fonction de comparaison pour les trajets, TID : trajet ID
 int compID(int tab[2000], int TID, int size) {
     for(int i = 0; i < size; i++) {
         if(tab[i] == TID) {
@@ -136,6 +112,8 @@ int compID(int tab[2000], int TID, int size) {
     return TID;
 }
 
+
+//insère dans le premier avl une ville en fonction de son ordre alphabétique (arbitraire), vérifie si une ville n'est pas présente + d'une fois par trajet en utilisant compID
 node *insert(node *avl, inf *city, int TID) {
     if(avl == NULL) {
         return newNode(city);
@@ -151,14 +129,13 @@ node *insert(node *avl, inf *city, int TID) {
         avl->fg = insert(avl->fg, city, TID);
     }
     else if(key == 0) {
-//printf("INCREASED OCC FOR  %s OLD : %d NEW : %d\n", avl->city.ville, avl->city.occ, avl->city.occ + 1);
 
         if(compID(avl->TID, TID, avl->idxTID) == 0) { // une seule fois une ville par trajet
         free(city->ville);
         free(city);
         return avl;           
         }
-        else {
+        else {         // la ville n'est pas déja présente dans un trajet, donc on incrémente le nombre d'occurence de cette ville.
         avl->TID[avl->idxTID] = TID;
             avl->idxTID++;
 
@@ -217,7 +194,8 @@ return LRotate(avl);
 return avl;
 }
 
-node * proCsv(char *csv, int row, node *avl) {
+//fonction de lecture du fichier CSV et lance l'insértion dans le premier avl
+node * proCsv(char *csv, int row, node *avl) { 
 FILE *file = fopen(csv, "r");
 if( file == NULL) {printf("file NULL\n"); exit(1);}
 char buff[256];
@@ -227,31 +205,11 @@ int step;
 int tid;
 int fline = 1;
 
-/*void adjust(node *avl) {
-    if(avl == NULL) {
-        return;
-    }
-    
-    adjust(avl->fg);
-
-        int occ = avl->city.occ;
-        int occd = avl->city.occd;
-
-        if(avl->city.occ > 1) {
-    int nocc = (occ - occd)/2;
-    nocc += occd;
-    avl->city.occ = nocc;        
-    }
-    adjust(avl->fd);
-    
-}*/
 
 while(fgets(buff, sizeof(buff), file) != NULL && ct < row) {
 char *token = strtok(buff, ";");
 col = 1;
-//printf("-------------------------------------ROW %d----------------------\n", ct);// A DELETE
 if(fline) {
-//printf("skipping fline\n");
 fline = 0;
 ct++;
 continue;
@@ -266,14 +224,12 @@ if(col == 2) {
 step = atoi(token);
 }
 else if(col == 3 || col == 4) {
-if(step == 1 && col == 3) {//logique d'ajt en cas de ville1 == épart
+if(step == 1 && col == 3) {//logique d'ajt en cas de ville1 = ville de départ
 inf *city = newInfo(token, 1);
-//printf("%s occ at creation : %d\n", city->ville, city->occ);
 avl = insert(avl, city, tid);
 }
 else {
 inf *city = newInfo(token, 0);
-//printf("%s occ at creation : %d\n", city->ville, city->occ);
 avl = insert(avl, city, tid);
 }
 }
@@ -288,6 +244,7 @@ return avl;
 }
 
 
+//fonction d'insertion dans le second avl en fonction du nombre d'occurence de chaque ville, si doublon (meme nb de passage par ville) on ajoute dans le tableau dataTAB
 node *insert2(node *avl, inf *city) {
     if(avl == NULL) { 
         return newNode(city);
@@ -340,16 +297,14 @@ return LRotate(avl);
 return avl;
 }
 
+
+//fonction qui parcours le premier avl puis provoque l'insertion dans le second
 node *parseAvl(node *avl1, node **avl2) {
     if(avl1 == NULL) {
         return NULL;
     }
    parseAvl(avl1->fg, avl2);
-   /* if(strcmp(avl1->city.ville, "ANDILLY") == 0 || (strcmp(avl1->city.ville, "BEAULIEU") == 0)) {
-printf("%s -> %d | %d\n", avl1->city.ville, avl1->city.occ, avl1->city.occd);
-exit(1);
-}*/
-        if((avl1->city.occ > 1 &&  IGN1) || IGN1 == 0) {
+if((avl1->city.occ > 1 &&  IGN1) || IGN1 == 0) { // macro permettant d'ignorer les occurences égales à 1 pour une meilleur performance
 
 *avl2 = insert2(*avl2, &avl1->city);
             free(avl1);
@@ -359,7 +314,7 @@ exit(1);
     return *avl2;
 }
 
-
+//fonction qui lit le second avl et qui tient compte du nombre de ville à output, lit le contenu de dataTAB pour chaque noeud de l'avl
 void parcours(node *avl, int a1[], int a2[], char a3[][60]){
 if(avl == NULL) {
 return;
@@ -387,6 +342,8 @@ return;
     
     parcours(avl->fg, a1 , a2, a3);
 }
+
+//fonction d'échange des tableau pour le 
 void swapTAB(char a3[][60], int a1[], int a2[], int j, int j2) {
 
     char temp[60];
@@ -404,6 +361,7 @@ void swapTAB(char a3[][60], int a1[], int a2[], int j, int j2) {
 
 }
 
+//fonction de tri par ordre alphabétique
 void sort(int n, int a1[], int a2[], char a3[][60]) {
 
     for (int i = 0; i < n - 1; i++) {
@@ -416,6 +374,7 @@ void sort(int n, int a1[], int a2[], char a3[][60]) {
 
 }
 
+//print les résultats au format adapté a GNUPLOT
 void print(int n, int a1[], int a2[], char a3[][60]){
 
 for(int i = 0; i < n; i++) {
@@ -432,6 +391,8 @@ int main(int argc, char *argv[])
     char villeTAB[10][60];
     int row = 0;
     char csv[50];
+    node *avl1 = NULL;
+    node *avl2 = NULL;
     if(argc < 2) {
         printf("usage : ./file <rows> <csv file>\n");
     }
@@ -439,19 +400,8 @@ int main(int argc, char *argv[])
         row = atoi(argv[1]);
         strcpy(csv, argv[2]);
     }
-    node *avl1 = NULL;
-    node *avl2 = NULL;
-   //printf("launch proCsv\n");
-    avl1 = proCsv(csv, row, avl1);
-    //printf("launch adjustement\n");
-        //printf("no adjust\n");    
-//adjust(avl1);
-    //printf("launch parseAvl\n");
-//unkt2(avl1);    
-avl2 = parseAvl(avl1, &avl2);
-freeAvl1(avl1);    
-if(avl2 == NULL){printf("avl2 = NULL\n");exit(1);}
-//unkt(avl2);       
+    avl1 = proCsv(csv, row, avl1);  
+avl2 = parseAvl(avl1, &avl2);   
 counter = 0;
 parcours(avl2, occTAB, occdTAB, villeTAB);
 sort(10, occTAB, occdTAB, villeTAB);
