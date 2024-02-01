@@ -276,8 +276,8 @@ parcours(avl->fg);
 
 void freeAVL(node *avl) {
 if(avl == NULL) {
-  return NULL;
-
+  return ;
+}
   freeAVL(avl->fg);
   freeAVL(avl->fd);
 
