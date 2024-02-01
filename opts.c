@@ -257,6 +257,7 @@ parseTable(avl, avl2->fg);
 //printf("PARSETABLE AVL1 CALL %f\n", avl2->traj.tot);
 inf *new = &avl2->traj;
 *avl = insert(*avl, new);
+free(avl2);
 
 parseTable(avl, avl2->fd);
 
@@ -293,7 +294,13 @@ parcours(avl->fd);
 if(counter < 50) {
 printf("%d |ID|%d;|TOTAL|%f;|MOYENNE|%f;|ETAPES|%d|MAX|%f;|MIN|%f\n", counter, avl->traj.id, avl->traj.tot, avl->traj.moy, avl->traj.etap, avl->traj.max, avl->traj.min);
 //printf("ID %d | TOTAL %f | MOYENNE %f | MAX %f | MIN %f | ETAPE %d | BAL %d\n", avl->traj.id, avl->traj.tot, avl->traj.moy, avl->traj.max, avl->traj.min, avl->traj.etap, getB(avl));
+free(avl->traj);
+free(avl);
 counter++;
+}
+else { 
+free(avl->traj);
+free(avl);
 }
 
 parcours(avl->fg);
