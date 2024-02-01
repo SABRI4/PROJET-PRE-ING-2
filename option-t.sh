@@ -17,7 +17,6 @@ lines=$(wc -l $2)
 if [ ! -e progc/optt.c ] ;then
 echo "Erreur, Fichier inexistant"
 exit 2
-./optt $lines $csv_file > ../temp/temp.dat
 elif [ -e progc/optt.c ] ;then
 cd progc
 make optt
