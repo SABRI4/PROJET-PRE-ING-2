@@ -380,6 +380,7 @@ printf("%d |%s;|OCC|%d;|OCCD| %d\n", i, a3[i], a1[i], a2[i]);
 void freeAVL(node *avl) {
 if(avl == NULL) {
     return;
+}
 
     freeAVL(avl->fg);
     freeAVL(avl->fd);
