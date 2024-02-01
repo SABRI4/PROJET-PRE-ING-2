@@ -12,12 +12,12 @@ csv_file=$2
 gcc $1 -o code2
 lines=$(wc -l < "$csv_file") 
 # Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
-./code2 $lines $csv_file > temp.dat
+./code2 $lines $csv_file > temp/temp.dat
 
 # Utilisation de awk pour transformer les données en un format attendu par Gnuplot
-awk -F '|' '{print $3, $7, $11, $13 }' temp.dat > option-s.dat
+awk -F '|' '{print $3, $7, $11, $13 }' temp/temp.dat > data/option-s.dat
 # Suppression du fichier temporaire
-rm temp.dat
+rm temp/temp.dat
 
 # Vérification de l'existence de données dans option-s.dat
 if [ ! -s option-s.dat ]; then
@@ -38,9 +38,9 @@ gnuplot -persist <<-EOF
     set yrange [0:*]
     unset xrange
     set datafile separator ";"
-    plot 'option-s.dat' using 2:xtic(1) title 'Distance average (Km)' with lines, \
-         'option-s.dat' using 3:xtic(1) title 'Distances Max (Km)' with lines, \
-         'option-s.dat' using 4:xtic(1) title 'Distances Min (Km)' with lines
+    plot 'data/option-s.dat' using 2:xtic(1) title 'Distance average (Km)' with lines, \
+         'data/option-s.dat' using 3:xtic(1) title 'Distances Max (Km)' with lines, \
+         'data/option-s.dat' using 4:xtic(1) title 'Distances Min (Km)' with lines
 EOF
 
 exit 0
