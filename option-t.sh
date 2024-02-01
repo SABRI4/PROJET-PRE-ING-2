@@ -60,6 +60,8 @@ gnuplot -persist <<-EOF
     set bmargin 9   # Adjust bottom margin
     set grid y
     set yrange [0:3500]  # Set y-axis range
-    plot 'data/option-t.dat' using 2:xticlabels(1) title 'Town Routes' lc rgb "blue", '' us>EOF
+    plot 'data/option-t.dat' using 2:xticlabels(1) title 'Town Routes' lc rgb "blue", '' using 3 title 'First Town' lc rgb "skyblue" 
+    
+    EOF
 
 exit 0
