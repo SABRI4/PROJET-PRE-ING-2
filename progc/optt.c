@@ -6,7 +6,7 @@ int counter;
 
 
 //création d'une structure pour chaque ville, occ : occurence de chaque ville, occd : occurence où la ville est une ville de départ.
-inf2 *newinf2o(char *ville, int occd) { 
+inf2 *newinfo(char *ville, int occd) { 
     inf2 *new = malloc(sizeof(inf2));
     if(new != NULL) {
         new->ville = malloc(60*sizeof(char));
@@ -16,7 +16,7 @@ inf2 *newinf2o(char *ville, int occd) {
         return new;
     }
     else {
-        printf("newinf2o is NULL for %s\n", ville);
+        printf("newinfo is NULL for %s\n", ville);
         return NULL;
     }
 }
@@ -225,11 +225,11 @@ step = atoi(token);
 }
 else if(col == 3 || col == 4) {
 if(step == 1 && col == 3) {//logique d'ajt en cas de ville1 = ville de départ
-inf2 *city = newinf2o(token, 1);
+inf2 *city = newinfo(token, 1);
 avl = insert(avl, city, tid);
 }
 else {
-inf2 *city = newinf2o(token, 0);
+inf2 *city = newinfo(token, 0);
 avl = insert(avl, city, tid);
 }
 }
