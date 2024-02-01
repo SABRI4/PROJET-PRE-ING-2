@@ -25,14 +25,10 @@ cd progc/
 cd -
 fi
 
-#fin chrono
-exec_timeend_l=$(date +%s.%N)
-exec_timetotal_l=$(echo "$exec_timeend_l - $exec_timestart_l" | bc)
-
 # Utilisation de awk pour transformer les données en un format attendu par Gnuplot
 awk -F '|' '{print $2, $4, $6}' temp/temp.dat > data/option-t.dat
 # Suppression du fichier temporaire
-rm temp.dat
+rm temp/temp.dat
 
 # Vérification de l'existence de données dans option-s.dat
 if [ ! -s option-t.dat ]; then
@@ -40,6 +36,10 @@ if [ ! -s option-t.dat ]; then
     exit 2
 fi
 
+
+#fin chrono
+exec_timeend_l=$(date +%s.%N)
+exec_timetotal_l=$(echo "$exec_timeend_l - $exec_timestart_l" | bc)
 echo "Temps d'exécution total du script : $exec_timetotal_l secondes"
 
 gnuplot -persist <<-EOF
