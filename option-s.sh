@@ -28,7 +28,7 @@ fi
 # Script Gnuplot
 gnuplot -persist <<-EOF
     set terminal png size 1400, 600
-    set output 'option-s_graph.png'
+    set output 'images/option-s_graph.png'
     set ylabel 'Distance (km)'
     set xlabel 'ROUTE ID'
     set title 'Option -s: Distance f(Route)'
