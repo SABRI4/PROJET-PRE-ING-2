@@ -34,7 +34,7 @@ echo "Temps d'exécution total du script : $exec_timetotal_l secondes"
 gnuplot -persist <<-PLOT
 
 set terminal png
-set output 'images/Trajet_Distance.png'
+set output 'images/optionL_graph.png'
 set ylabel 'DISTANCE (km)'
 set xlabel 'ROUTE ID'
 set title 'Top 10 trajets les plus long'
