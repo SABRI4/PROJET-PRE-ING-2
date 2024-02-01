@@ -81,9 +81,11 @@ case "$2" in
         ./option2.sh $1
         ;;
     -t)
+        make optt
         ./optiont.sh optt.c $1
         ;;
     -s)
+        make opts
         ./options.sh opts.c $1
         ;;
     -l)
@@ -96,5 +98,6 @@ case "$2" in
         ;;
 esac
 
+make clean
 
 echo "Le script a été exécuté avec succès."
