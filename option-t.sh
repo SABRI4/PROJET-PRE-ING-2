@@ -18,15 +18,16 @@ if [ ! -e progc/optt.c ] ;then
 cd progc
 make optt
 cd ..
-./optt $lines $csv_file > temp/temp.dat
+./optt $lines $csv_file > ../temp/temp.dat
 elif [ -e progc/optt.c ] ;then
 cd progc
-./optt $lines $csv_file > temp/temp.dat
+make optt
+./optt $lines $csv_file > ../temp/temp.dat
 cd ..
 fi
 
 # Utilisation de awk pour transformer les données en un format attendu par Gnuplot
-awk -F '|' '{print $2, $4, $6}' temp/temp.dat > data/option-t.dat
+awk -F '|' '{print $2, $4, $6}' ../temp/temp.dat > data/option-t.dat
 # Suppression du fichier temporaire
 rm temp/temp.dat
 
