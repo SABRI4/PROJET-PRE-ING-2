@@ -7,6 +7,8 @@ chmod +x option1.sh
 chmod +x option2.sh
 chmod +x options.sh
 chmod +x optiont.sh
+chmod +w ..
+
 # Fonction pour afficher l'aide
 print_help() {
     echo "Usage: $0 -d1 | -d2 | -t | -s | -l <FILE>"
@@ -23,7 +25,7 @@ print_help() {
 check_temp_folder() {
     if [ ! -e "temp" ]; then
         echo "Création du dossier temp"
-        mkdir temp
+        mkdir -p temp
     else
         echo "Le dossier temp existe déjà."
     fi
@@ -33,8 +35,7 @@ check_temp_folder() {
 check_data_folder() {
     if [ ! -e "data" ]; then
         echo "Création du dossier data"
-        chmod +w ..
-        mkdir data
+        mkdir -p data
     else
         echo "Le dossier data existe déjà."
     fi
@@ -44,17 +45,15 @@ check_data_folder() {
 check_images_folder() {
     if [ ! -e "images" ]; then
         echo "Création du dossier images"
-        mkdir images
+        mkdir -p images
     else
         echo "Le dossier images existe déjà."
     fi
 }
-check_temp_folder
-check_data_folder
-check_images_folder
+
 # Vérification du nombre d'arguments
 if [ "$#" -ne 2 ]; then
-    echo "Erreur: il y a trop d'argumentsou pas assez"
+    echo "Erreur: il y a trop d'arguments dans l'argumentation, veuillez utiliser -h pour plus d'aide"
     print_help
     exit 1
 fi
@@ -67,6 +66,11 @@ if [ ! -f "$csv_file" ]; then
     print_help
     exit 1
 fi
+
+#verification de la présence des dossier data, temp et images
+check_temp_folder
+check_data_folder
+check_images_folder
 
 # Vérification des options
 case "$2" in
