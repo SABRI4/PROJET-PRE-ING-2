@@ -1,5 +1,5 @@
-#IFNDIF OPTT_H
-#DEFINE OPTT_H
+#ifndef OPTT_H
+#define OPTT_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,4 +23,4 @@ typedef struct node {
     int idx;
 }node;
 
-#ENDIF 
+#endif
