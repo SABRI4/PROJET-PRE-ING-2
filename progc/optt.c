@@ -324,7 +324,6 @@ return;
         strcpy(a3[counter], avl->city.ville);
         a1[counter] = avl->city.occ;
         a2[counter] = avl->city.occd;
-        free(&avl->city);
         counter++; }    
         for(int i = 0; i < avl->idx; i++) {
         if(counter < 10) {
@@ -333,11 +332,6 @@ return;
         a2[counter] = avl->occdTab[i];
         counter++;
         }
-        free(avl);
-        }
-        if(counter > 10) {
-        free(&avl->city);
-        free(avl);
         }
     
     parcours(avl->fg, a1 , a2, a3);
@@ -382,6 +376,15 @@ printf("%d |%s;|OCC|%d;|OCCD| %d\n", i, a3[i], a1[i], a2[i]);
 
 } 
 
+void freeAVL(node *avl) {
+if(avl == NULL) {
+    return;
+
+    freeAVL(avl->fg);
+    freeAVl(avl->fd);
+
+    free(avl->city);
+    free(avl);
 }
 int main(int argc, char *argv[])
 {   
@@ -404,6 +407,7 @@ int main(int argc, char *argv[])
 avl2 = parseAvl(avl1, &avl2);   
 counter = 0;
 parcours(avl2, occTAB, occdTAB, villeTAB);
+freeAVL(avl2);
 sort(10, occTAB, occdTAB, villeTAB);
 print(10, occTAB, occdTAB, villeTAB);
 
