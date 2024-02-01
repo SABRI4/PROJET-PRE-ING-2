@@ -17,6 +17,7 @@ inf *newInfo(char *ville, int occd) {
     }
     else {
         printf("newInfo is NULL for %s\n", ville);
+        return NULL;
     }
 }
 
