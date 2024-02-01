@@ -84,12 +84,16 @@ case "$2" in
         ;;
     -t)
         ./option-t.sh optt $1
-        make clean
+        cd progc
+        make clean optt
+        cd ..
 
         ;;
     -s)
         ./option-s.sh opts $1
-        make clean
+        cd progc
+        make clean opts
+        cd ..
 
         ;;
     -l)
