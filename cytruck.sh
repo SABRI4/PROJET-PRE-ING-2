@@ -2,7 +2,7 @@
 
 #accorde acces exec à tout les script
 chmod +x cytruck.sh
-chmod +x optionL.sh
+chmod +x option-l.sh
 chmod +x option-1.sh
 chmod +x option2.sh
 chmod +x option-s.sh
