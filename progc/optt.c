@@ -375,18 +375,19 @@ for(int i = 0; i < n; i++) {
 printf("%d |%s;|OCC|%d;|OCCD| %d\n", i, a3[i], a1[i], a2[i]);
 
 } 
+}
 
 void freeAVL(node *avl) {
 if(avl == NULL) {
     return;
 
     freeAVL(avl->fg);
-    freeAVl(avl->fd);
+    freeAVL(avl->fd);
 
     free(avl);
 }
-int main(int argc, char *argv[])
-{   
+
+int main(int argc, char *argv[]) {   
 
     int occdTAB[10];
     int occTAB[10];
