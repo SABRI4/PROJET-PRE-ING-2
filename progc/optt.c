@@ -307,7 +307,7 @@ node *parseAvl(node *avl1, node **avl2) {
 if((avl1->city.occ > 1 &&  IGN1) || IGN1 == 0) { // macro permettant d'ignorer les occurences égales à 1 pour une meilleur performance
 
 *avl2 = insert2(*avl2, &avl1->city);
-            free(avl1);
+            //free(avl1);
 }
    parseAvl(avl1->fd, avl2);
     
@@ -405,7 +405,8 @@ int main(int argc, char *argv[]) {
         strcpy(csv, argv[2]);
     }
     avl1 = proCsv(csv, row, avl1);  
-avl2 = parseAvl(avl1, &avl2);   
+avl2 = parseAvl(avl1, &avl2); 
+freeAVL(avl1);
 counter = 0;
 parcours(avl2, occTAB, occdTAB, villeTAB);
 freeAVL(avl2);
