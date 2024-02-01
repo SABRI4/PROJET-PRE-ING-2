@@ -82,11 +82,11 @@ case "$2" in
         ;;
     -t)
         make optt
-        ./optiont.sh optt.c $1
+        ./optiont.sh progc/optt.c $1
         ;;
     -s)
         make opts
-        ./options.sh opts.c $1
+        ./options.sh progc/opts.c $1
         ;;
     -l)
         ./optionL.sh $1
