@@ -16,7 +16,7 @@ lines=$(wc -l $2)
 # Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
 if [ ! -e progc/optt.c ] ;then
 cd progc
-make coptt
+make optt
 cd ..
 ./optt $lines $csv_file > temp/temp.dat
 elif [ -e progc/optt.c ] ;then
