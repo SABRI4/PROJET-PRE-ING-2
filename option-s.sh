@@ -6,13 +6,13 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-cd progc
-make opts
-cd ..
 lines=$(wc -l < "$2") 
-# Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
-./opts $lines $2 > temp/temp.dat
+cd progc
+make $1
+cd ..
 
+# Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
+./progc/opts $lines ../$2 > temp/temp.dat
 # Utilisation de awk pour transformer les données en un format attendu par Gnuplot
 awk -F '|' '{print $3, $7, $11, $13 }' temp/temp.dat > data/option-s.dat
 # Suppression du fichier temporaire
