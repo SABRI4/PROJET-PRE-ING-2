@@ -265,12 +265,12 @@ parcours(avl->fd);
 
 if(counter < 50) {
 printf("%d |ID|%d;|TOTAL|%f;|MOYENNE|%f;|ETAPES|%d|MAX|%f;|MIN|%f\n", counter, avl->traj.id, avl->traj.tot, avl->traj.moy, avl->traj.etap, avl->traj.max, avl->traj.min);
-free(avl->traj);
+free(&avl->traj);
 free(avl);
 counter++;
 }
 else { 
-free(avl->traj);
+free(&avl->traj);
 free(avl);
 }
 
