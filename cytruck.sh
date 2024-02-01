@@ -85,9 +85,13 @@ case "$2" in
         ;;
     -t)
         ./optiont.sh progc/optt.c $1
+        make clean
+
         ;;
     -s)
         ./options.sh progc/opts.c $1
+        make clean
+
         ;;
     -l)
         ./optionL.sh $1
@@ -98,7 +102,5 @@ case "$2" in
         exit 1
         ;;
 esac
-
-make clean
 
 echo "Le script a été exécuté avec succès."
