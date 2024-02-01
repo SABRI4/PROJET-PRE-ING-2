@@ -19,7 +19,7 @@ echo "Erreur, Fichier inexistant"
 exit 2
 elif [ -e progc/optt.c ] ;then
 cd progc
-make optt
+make optt.c
 ./optt $lines $csv_file > ../temp/temp.dat
 cd ..
 fi
