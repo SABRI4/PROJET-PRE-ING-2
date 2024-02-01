@@ -16,7 +16,7 @@
 ## Utilisation du Script Shell
 
 Avant l'utilisation de notre application veuillez vous accorder les droits d'execution de l'application dans votre terminal via la commande suivante :
-chmod +x cytruck.sh
+- chmod +x cytruck.sh
 
 Le script shell prend en paramètres le chemin du fichier CSV d'entrée et les choix de traitements à effectuer. Voici les options disponibles :
 
