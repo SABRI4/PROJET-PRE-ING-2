@@ -40,7 +40,7 @@ new->city = *city;
     }
         else {
         printf("newNode is NULL for %s\n", city->ville);
-        exit(1);
+        return NULL;
     }
 }
 
