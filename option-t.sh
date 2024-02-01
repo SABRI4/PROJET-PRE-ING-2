@@ -12,7 +12,7 @@ cd progc
 make $1
 cd ..
 
-s# Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
+# Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
 ./optt $lines $2 > temp/temp.dat
 
 # Utilisation de awk pour transformer les données en un format attendu par Gnuplot
