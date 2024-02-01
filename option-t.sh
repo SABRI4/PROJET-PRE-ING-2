@@ -25,7 +25,7 @@ cd ..
 fi
 
 # Utilisation de awk pour transformer les données en un format attendu par Gnuplot
-awk -F '|' '{print $2, $4, $6}' ../temp/temp.dat > data/option-t.dat
+awk -F '|' '{print $2, $4, $6}' temp/temp.dat > data/option-t.dat
 # Suppression du fichier temporaire
 rm temp/temp.dat
 
