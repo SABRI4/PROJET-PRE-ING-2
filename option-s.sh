@@ -18,11 +18,11 @@ if [ ! -e progc/opts ] ;then
 cd progc/
 make opts
 ./opts $lines $csv_file > temp/temp.dat
-cd -
+cd ..
 elif [ -e progc/opts ] ;then
 cd progc/
 ./opts $lines $csv_file > temp/temp.dat
-cd -
+cd ..
 fi
 
 
