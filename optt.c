@@ -359,16 +359,6 @@ exit(1);
     return *avl2;
 }
 
-void freeAvl1(node *avl) {
-if(avl == NULL) {
-return;
-}
-freeAvl1(avl->fg);
-freeAvl1(avl->fd);
-
-free(avl);
-
-}
 
 void parcours(node *avl, int a1[], int a2[], char a3[][60]){
 if(avl == NULL) {
@@ -379,6 +369,7 @@ return;
         strcpy(a3[counter], avl->city.ville);
         a1[counter] = avl->city.occ;
         a2[counter] = avl->city.occd;
+        free(avl->city);
         counter++; }    
         for(int i = 0; i < avl->idx; i++) {
         if(counter < 10) {
@@ -387,7 +378,12 @@ return;
         a2[counter] = avl->occdTab[i];
         counter++;
         }
-        }    
+        free(avl);
+        }
+        if(counter > 10) {
+        free(avl->city);
+        free(avl);
+        }
     
     parcours(avl->fg, a1 , a2, a3);
 }
