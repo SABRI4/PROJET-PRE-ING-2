@@ -6,10 +6,8 @@ Vous êtes le gérant d'une société nationale de transport routier, et vous ch
 
 ## Organisation du Projet
 
-- **data/ :** Dossier contenant le fichier CSV d'entrée avec les données des trajets.??
+- **Livrable/ :** contient la présentation des executions et de la vie groupale du projet.
 - **progc/ :** Dossier contenant les programmes C, son makefile, et l'exécutable.
-- **images/ :** Dossier où seront stockées les images des graphiques générés. ??
-- **temp/ :** Dossier pour les fichiers intermédiaires nécessaires au programme. ??
 - **demo/ :** Dossier où seront des exemples d’exécution de notre application.
 - **cytruck.sh :** Script Shell principal situé à la racine du projet.
 
@@ -17,6 +15,9 @@ Vous êtes le gérant d'une société nationale de transport routier, et vous ch
 
 Avant l'utilisation de notre application veuillez vous accorder les droits d'execution de l'application dans votre terminal via la commande suivante :
 - chmod +x cytruck.sh
+
+De plus afin de permettre la rotation d'image, veuillez installer graphicsmagick via la commande suivante (si ce n'est pas déja fait) :
+- sudo apt install graphicsmagick-imagemagick-compat
 
 Le script shell prend en paramètres le chemin du fichier CSV d'entrée et les choix de traitements à effectuer. Voici les options disponibles :
 
