@@ -383,7 +383,6 @@ if(avl == NULL) {
     freeAVL(avl->fg);
     freeAVl(avl->fd);
 
-    free(avl->city);
     free(avl);
 }
 int main(int argc, char *argv[])
