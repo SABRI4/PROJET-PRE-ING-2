@@ -6,8 +6,8 @@ int counter;
 
 
 //création d'une structure pour chaque ville, occ : occurence de chaque ville, occd : occurence où la ville est une ville de départ.
-inf *newInfo(char *ville, int occd) { 
-    inf *new = malloc(sizeof(inf));
+inf2 *newinf2o(char *ville, int occd) { 
+    inf2 *new = malloc(sizeof(inf2));
     if(new != NULL) {
         new->ville = malloc(60*sizeof(char));
         strcpy(new->ville, ville);
@@ -16,13 +16,13 @@ inf *newInfo(char *ville, int occd) {
         return new;
     }
     else {
-        printf("newInfo is NULL for %s\n", ville);
+        printf("newinf2o is NULL for %s\n", ville);
         return NULL;
     }
 }
 
 //création d'un noeud d'avl, dataTab permet de stocker les noms des villes qui ont la meme occurence que d'autre ville, ce qui permet de régler la question des doublons dans un avl
-node *newNode(inf *city) {
+node *newNode(inf2 *city) {
     node *new = malloc(sizeof(node));
     if(new != NULL) {
 
@@ -114,7 +114,7 @@ int compID(int tab[2000], int TID, int size) {
 
 
 //insère dans le premier avl une ville en fonction de son ordre alphabétique (arbitraire), vérifie si une ville n'est pas présente + d'une fois par trajet en utilisant compID
-node *insert(node *avl, inf *city, int TID) {
+node *insert(node *avl, inf2 *city, int TID) {
     if(avl == NULL) {
         return newNode(city);
     }
@@ -225,11 +225,11 @@ step = atoi(token);
 }
 else if(col == 3 || col == 4) {
 if(step == 1 && col == 3) {//logique d'ajt en cas de ville1 = ville de départ
-inf *city = newInfo(token, 1);
+inf2 *city = newinf2o(token, 1);
 avl = insert(avl, city, tid);
 }
 else {
-inf *city = newInfo(token, 0);
+inf2 *city = newinf2o(token, 0);
 avl = insert(avl, city, tid);
 }
 }
@@ -245,7 +245,7 @@ return avl;
 
 
 //fonction d'insertion dans le second avl en fonction du nombre d'occurence de chaque ville, si doublon (meme nb de passage par ville) on ajoute dans le tableau dataTAB
-node *insert2(node *avl, inf *city) {
+node *insert2(node *avl, inf2 *city) {
     if(avl == NULL) { 
         return newNode(city);
     }
