@@ -8,12 +8,12 @@ fi
 
 executable=$1
 csv_file=$2
-
-gcc $1 -o code
 lines=$(wc -l $csv_file)
+cd progc
+make optt
 # Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
-./code $lines $csv_file > temp/temp.dat
-
+./optt $lines $csv_file > ../temp/temp.dat
+cd ..
 # Utilisation de awk pour transformer les données en un format attendu par Gnuplot
 awk -F '|' '{print $2, $4, $6}' temp/temp.dat > data/option-t.dat
 # Suppression du fichier temporaire
