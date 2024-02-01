@@ -17,11 +17,11 @@ lines=$(wc -l $2)
 if [ ! -e progc/opts.c ] ;then
 cd progc
 make opts
-./opts $lines $csv_file > temp/temp.dat
+./opts $lines $csv_file > ../temp/temp.dat
 cd ..
 elif [ -e progc/opts.c ] ;then
 cd progc
-./opts $lines $csv_file > temp/temp.dat
+./opts $lines $csv_file > ../temp/temp.dat
 cd ..
 fi
 
