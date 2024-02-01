@@ -15,9 +15,8 @@ csv_file=$2
 lines=$(wc -l $2)
 # Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
 if [ ! -e progc/optt.c ] ;then
-cd progc
-make optt
-cd ..
+echo "Erreur, Fichier inexistant"
+exit 2
 ./optt $lines $csv_file > ../temp/temp.dat
 elif [ -e progc/optt.c ] ;then
 cd progc
