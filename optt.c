@@ -352,6 +352,7 @@ exit(1);
         if((avl1->city.occ > 1 &&  IGN1) || IGN1 == 0) {
 
 *avl2 = insert2(*avl2, &avl1->city);
+            free(avl1);
 }
    parseAvl(avl1->fd, avl2);
     
