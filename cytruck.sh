@@ -3,10 +3,10 @@
 #accorde acces exec à tout les script
 chmod +x cytruck.sh
 chmod +x optionL.sh
-chmod +x option1.sh
+chmod +x option-1.sh
 chmod +x option2.sh
-chmod +x options.sh
-chmod +x optiont.sh
+chmod +x option-s.sh
+chmod +x option-t.sh
 chmod +w ..
 
 # Fonction pour afficher l'aide
