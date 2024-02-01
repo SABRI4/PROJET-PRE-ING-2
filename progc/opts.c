@@ -281,7 +281,6 @@ if(avl == NULL) {
   freeAVL(avl->fg);
   freeAVL(avl->fd);
 
-  free(avl->traj);
   free(avl);
   
 }
