@@ -1,11 +1,10 @@
-#IFNDIF OPTS_H
-#DEFINE OPTS_H
+#ifndef OPTS_H
+#define OPTS_H
 
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 typedef struct trajetInfo {
 int id;
@@ -26,4 +25,4 @@ struct avlNode *fd;
 
 
 
-#ENDIF
+#endif
