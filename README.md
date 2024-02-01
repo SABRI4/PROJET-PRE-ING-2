@@ -7,7 +7,7 @@
 ## Organisation du Projet
 
 - **data/ :** Dossier contenant le fichier CSV d'entrée avec les données des trajets.??
-- **progc/ :** Dossier contenant le programme C, son makefile, et l'exécutable.
+- **progc/ :** Dossier contenant les programmes C, son makefile, et l'exécutable.
 - **images/ :** Dossier où seront stockées les images des graphiques générés. ??
 - **temp/ :** Dossier pour les fichiers intermédiaires nécessaires au programme. ??
 - **demo/ :** Dossier où seront des exemples d’exécution de notre application.
@@ -30,3 +30,5 @@ Le script shell prend en paramètres le chemin du fichier CSV d'entrée et les c
 Exemple d'utilisation :
 
 ./cytruck.sh chemin/vers/data.csv -l
+
+Une fois executé, un dossier 'temp', un dossier 'data', ainsi qu'un dossier 'images' devraient être présent dans votre répertoire courant.
