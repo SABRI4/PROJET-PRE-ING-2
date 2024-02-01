@@ -1,7 +1,5 @@
 CC = gcc
-
 CFLAGS = -Wall -Wextra
-
 T1 = optt
 T2 = opts
 
@@ -15,8 +13,8 @@ optt.o : optt.c optt.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 opts.o : opts.c opts.h
+	$(CC) $(CFLAGS) -c -o $@ $<
 
-  	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
 	rm -f optt.o opts.o $(T1) $(T2)
