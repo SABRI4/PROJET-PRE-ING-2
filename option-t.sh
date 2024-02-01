@@ -1,8 +1,5 @@
 #!/bin/bash
 
-#chrono depart
-exec_timestart_l=$(date +%s.%N)
-
 # Vérification de la présence de deux arguments
 if [ $# -ne 2 ]; then
     echo "Usage: $0 <C PROGRAM> <csv_file>"
@@ -12,22 +9,15 @@ fi
 executable=$1
 csv_file=$2
 
+gcc $1 -o code
 lines=$(wc -l $2)
 # Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
-if [ ! -e progc/optt.c ] ;then
-echo "Erreur, Fichier inexistant"
-exit 2
-elif [ -e progc/optt.c ] ;then
-cd progc
-make optt.c
-./optt $lines $csv_file > ../temp/temp.dat
-cd ..
-fi
+./code $lines $csv_file > temp.dat
 
 # Utilisation de awk pour transformer les données en un format attendu par Gnuplot
-awk -F '|' '{print $2, $4, $6}' temp/temp.dat > data/option-t.dat
+awk -F '|' '{print $2, $4, $6}' temp.dat > option-t.dat
 # Suppression du fichier temporaire
-rm temp/temp.dat
+rm temp.dat
 
 # Vérification de l'existence de données dans option-s.dat
 if [ ! -s option-t.dat ]; then
@@ -35,15 +25,9 @@ if [ ! -s option-t.dat ]; then
     exit 2
 fi
 
-
-#fin chrono
-exec_timeend_l=$(date +%s.%N)
-exec_timetotal_l=$(echo "$exec_timeend_l - $exec_timestart_l" | bc)
-echo "Temps d'exécution total du script : $exec_timetotal_l secondes"
-
 gnuplot -persist <<-EOF
-    set terminal png size 1000,800
-    set output 'images/option-t_graph.png'
+    set terminal png size 1000,800  
+    set output 'option-t_graph.png'
     set ylabel 'NB ROUTES'
     set xlabel 'TOWN NAMES'
     set title 'OPTION-T'
@@ -59,8 +43,8 @@ gnuplot -persist <<-EOF
     set bmargin 9   # Adjust bottom margin
     set grid y
     set yrange [0:3500]  # Set y-axis range
-    plot 'data/option-t.dat' using 2:xticlabels(1) title 'Town Routes' lc rgb "blue", '' using 3 title 'First Town' lc rgb "skyblue" 
-    
-    EOF
+    plot 'option-t.dat' using 2:xticlabels(1) title 'Town Routes' lc rgb "blue", '' using 3 title 'First Town' lc rgb "skyblue"
+EOF
 
 exit 0
+
