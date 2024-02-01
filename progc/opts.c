@@ -17,6 +17,7 @@ new->fg = NULL;
 new->fd = NULL;
 return new;
 }
+  return NULL;
 }
 
 //fonction qui retourne une structure contenant les stats nécessaire au traitement de l'option s
@@ -31,6 +32,7 @@ new->min = dist;
 new->max = dist;
 return new;
 }
+  return NULL;
 }
 
 int max(int a, int b) {
@@ -266,15 +268,22 @@ parcours(avl->fd);
 if(counter < 50) {
 printf("%d |ID|%d;|TOTAL|%f;|MOYENNE|%f;|ETAPES|%d|MAX|%f;|MIN|%f\n", counter, avl->traj.id, avl->traj.tot, avl->traj.moy, avl->traj.etap, avl->traj.max, avl->traj.min);
 free(&avl->traj);
-free(avl);
 counter++;
-}
-else { 
-free(&avl->traj);
-free(avl);
 }
 
 parcours(avl->fg);
+}
+
+void freeAVL(node *avl) {
+if(avl == NULL) {
+  return NULL;
+
+  freeAVL(avl->fg);
+  freeAVL(avl->fd);
+
+  free(avl->traj);
+  free(avl);
+  
 }
 
 int main(int argc, char *argv[]) {
@@ -298,4 +307,5 @@ avl2 = adjust(avl2); // crée les moyennes + crée les totaux
 avl = parseTable(&avl, avl2);
 counter = 0;
 parcours(avl);
+freeAVL(avl);
 }
