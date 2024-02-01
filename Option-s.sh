@@ -24,6 +24,11 @@ cd progc/
 ./opts $lines $csv_file > temp/temp.dat
 cd -
 fi
+
+#fin chrono
+exec_timeend_l=$(date +%s.%N)
+exec_timetotal_l=$(echo "$exec_timeend_l - $exec_timestart_l" | bc)
+
 # Utilisation de awk pour transformer les données en un format attendu par Gnuplot
 awk -F '|' '{print $3, $7, $11, $13 }' temp/temp.dat > data/option-s.dat
 # Suppression du fichier temporaire
@@ -35,9 +40,6 @@ if [ ! -s option-s.dat ]; then
     exit 2
 fi
 
-#fin chrono
-exec_timeend_l=$(date +%s.%N)
-exec_timetotal_l=$(echo "$exec_timeend_l - $exec_timestart_l" | bc)
 
 echo "Temps d'exécution total du script : $exec_timetotal_l secondes"
 
