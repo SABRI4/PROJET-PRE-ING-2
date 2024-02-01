@@ -27,7 +27,7 @@ check_temp_folder() {
         echo "Création du dossier temp"
         mkdir -p temp
     else
-        rm -r temp/*
+        
         echo "Le dossier temp existe déjà."
     fi
 }
