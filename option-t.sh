@@ -10,7 +10,7 @@ executable=$1
 csv_file=$2
 
 gcc $1 -o code
-lines=$(wc -l $2)
+lines=$(wc -l $csv_file)
 # Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
 ./code $lines $csv_file > temp.dat
 
