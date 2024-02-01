@@ -10,7 +10,7 @@ typedef struct info {
     char *ville;
     int occ;
     int occd;
-}inf;
+}inf2;
 
 typedef struct node {
     struct info city;
