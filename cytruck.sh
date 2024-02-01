@@ -27,6 +27,7 @@ check_temp_folder() {
         echo "Création du dossier temp"
         mkdir -p temp
     else
+        rm -r temp/*
         echo "Le dossier temp existe déjà."
     fi
 }
@@ -37,6 +38,7 @@ check_data_folder() {
         echo "Création du dossier data"
         mkdir -p data
     else
+        rm -r data/*
         echo "Le dossier data existe déjà."
     fi
 }
@@ -47,6 +49,7 @@ check_images_folder() {
         echo "Création du dossier images"
         mkdir -p images
     else
+        rm -r images/*
         echo "Le dossier images existe déjà."
     fi
 }
