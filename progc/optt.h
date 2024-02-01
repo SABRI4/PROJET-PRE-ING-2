@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define MAXSIZE 350000 
 
 typedef struct info {
     char *ville;
