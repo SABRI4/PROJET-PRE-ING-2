@@ -44,7 +44,7 @@ set lmargin 10
 set bmargin 15
 set rmargin 0.5
 set tmargin 5
-plot "data/conducteur_distance.dat" using 1:xtic(sprintf("%s %s", stringcolumn(2), stringcolu>
+plot "data/conducteur_distance.dat" using 1:xtic(sprintf("%s %s", stringcolumn(2), stringcolumn(3))) notitle lc rgb "purple"
 
 PLOT
 
