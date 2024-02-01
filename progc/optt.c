@@ -1,6 +1,5 @@
 #include "optt.h"
 
-#define MAXSIZE 350000 // ??
 #define IGN1 1
 
 int counter;
