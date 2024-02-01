@@ -15,6 +15,7 @@ optt.o : optt.c optt.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 opts.o : opts.c opts.h
+
   	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
