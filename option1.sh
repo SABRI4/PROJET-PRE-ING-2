@@ -1,67 +1,54 @@
 #!/bin/bash
 
-#départ chrono
-exec_timestart_1=$(date +%s.%N)
-
-# Vérifier si le nom du fichier CSV est fourni en argument
-if [ $# -eq 0 ]; then
-    echo "Usage: $0 <csv_filename>"
+# Vérification de la présence de deux arguments
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <C PROGRAM> <csv_file>"
     exit 1
 fi
 
-# Chemin complet du fichier CSV
-csv_file=$1
+lines=$(wc -l < "$2")
 
-# Chemin complet du fichier de sortie
-output_file="data/conducteur_trajets.dat"
+cd progc
+make $1
+exec_timestart_l=$(date +%s.%N)
+# Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
+./optt $lines ../$2 > ../temp/temp.dat
+cd ..
+# Utilisation de awk pour transformer les données en un format attendu par Gnuplot
+awk -F '|' '{print $2, $4, $6}' temp/temp.dat > data/option-t.dat
+# Suppression du fichier temporaire
+rm temp/temp.dat
 
-awk -b -F';' '
-    NR > 1 {
-        if (!(($6 SUBSEP $1) in unique)) {
-            unique[$6 SUBSEP $1]
-            count[$6]++
-        }
-    }
-    END {
-        for (driver in count) {
-            print count[driver], driver
-        }
-    }
-' "$csv_file" | sort -nrk1,1 | head -n 10 | awk '{ print $2, $3, $1 }' > "$output_file"
+# Vérification de l'existence de données dans option-s.dat
+if [ ! -s data/option-t.dat ]; then
+    echo "Erreur : Le fichier de données est vide ou n'existe pas."
+    exit 2
+fi
 
-cat $output_file
+exec_timeend_l=$(date +%s.%N)
+exec_timetotal_l=$(echo "$exec_timeend_l - $exec_timestart_l" | bc)
 
-#Fin chrono
-exec_timeend_1=$(date +%s.%N)
-exec_timetotal_1=$(echo "$exec_timeend_1 - $exec_timestart_1" | bc)
+echo "Temps d'exécution total du script : $exec_timetotal_l secondes"
 
-echo "Temps d'exécution total du script : $exec_timetotal_1 secondes"
-
-# Création de l'histogramme avec Gnuplot
-gnuplot -persist <<-PLOT
-
-set terminal png size 700,1000
-set output 'images/Option_D1_graph.png'
-set ylabel 'TOP 10 CONDUCTEURS AVEC LE PLUS DE TRAJETS'
-set y2label 'NB ROUTES' offset 3,0
-set xtics font "Arial, 11"
-set xlabel 'DRIVERS NAMES' rotate by  180 offset character 0, -11, 0
-set style data histograms
-set xtic rotate by 90 scale 0 offset character 0, -11, 0
-set style fill solid 0.5 border -1
-set boxwidth 0.5
-set ytics rotate by 90
-set grid ytics
-set yrange [0:*]
-set size 0.6, 1
-set datafile separator " "
-set lmargin 10
-set bmargin 15
-set rmargin 0
-set tmargin 5
-plot "$output_file" using 3:xticlabels(sprintf("%s %s", stringcolumn(1), stringcolumn(2))) notitle lc rgb "blue" with boxes
-PLOT
-
-convert -rotate 90 images/Option_D1_graph.png  images/Option_D1_graph.png
+gnuplot -persist <<-EOF
+    set terminal png size 1000,800  
+    set output 'images/option-t_graph.png'
+    set ylabel 'NB ROUTES'
+    set xlabel 'TOWN NAMES'
+    set title 'OPTION-T'
+    set style data histograms
+    set style histogram cluster gap 1
+    set style fill solid 1.0 border -1
+    set boxwidth 1 relative
+    set datafile separator ";"
+    set xtics rotate by -50 font ",12"  # Adjust font size if necessary
+    set lmargin 10  # Adjust left margin
+    set rmargin 10  # Adjust right margin
+    set tmargin 5   # Adjust top margin
+    set bmargin 9   # Adjust bottom margin
+    set grid y
+    set yrange [0:3500]  # Set y-axis range
+    plot 'data/option-t.dat' using 2:xticlabels(1) title 'Town Routes' lc rgb "blue", '' using 3 title 'First Town' lc rgb "skyblue"
+EOF
 
 exit 0
