@@ -12,11 +12,11 @@ chmod +x option-t.sh
 print_help() {
     echo "Usage: $0 -d1 | -d2 | -t | -s | -l <FILE>"
     echo "Options:"
-    echo "  -d1      Appelle le script optiond1.sh"
-    echo "  -d2      Appelle le script optiond2.sh"
-    echo "  -t       Appelle le script optiont.sh"
-    echo "  -s       Appelle le script options.sh"
-    echo "  -l       Appelle le script optionLV4.sh"
+    echo "  -d1      Appelle le script option-d1.sh"
+    echo "  -d2      Appelle le script option-d2.sh"
+    echo "  -t       Appelle le script option-t.sh"
+    echo "  -s       Appelle le script option-s.sh"
+    echo "  -l       Appelle le script option-l.sh"
 }
 
 
