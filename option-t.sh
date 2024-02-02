@@ -6,7 +6,7 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-lines=$(wc -l $csv_file)
+lines=$(wc -l < "$2")
 
 cd progc
 make $1
