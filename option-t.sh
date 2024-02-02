@@ -25,6 +25,11 @@ if [ ! -s data/option-t.dat ]; then
     exit 2
 fi
 
+exec_timeend_l=$(date +%s.%N)
+exec_timetotal_l=$(echo "$exec_timeend_l - $exec_timestart_l" | bc)
+
+echo "Temps d'exécution total du script : $exec_timetotal_l secondes"
+
 gnuplot -persist <<-EOF
     set terminal png size 1000,800  
     set output 'images/option-t_graph.png'
