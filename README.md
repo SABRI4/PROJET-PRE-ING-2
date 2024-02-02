@@ -1,4 +1,4 @@
-# Projet de Gestion de Données pour une Société de Transport Routier : CYTRUCK
+*# Projet de Gestion de Données pour une Société de Transport Routier : CYTRUCK
 
 ## Description Générale
 
@@ -10,11 +10,18 @@ Vous êtes le gérant d'une société nationale de transport routier, et vous ch
 - **progc/ :** Dossier contenant les programmes C, son makefile, et l'exécutable.
 - **demo/ :** Dossier où seront des exemples d’exécution de notre application.
 - **cytruck.sh :** Script Shell principal situé à la racine du projet.
-
+- **data/ :** Dossier ou se trouve le fichier data.csv et les données générées par le gnuplot
 ## Utilisation du Script Shell
+
 
 Avant l'utilisation de notre application veuillez vous accorder les droits d'execution de l'application dans votre terminal via la commande suivante :
 - chmod +x cytruck.sh
+
+Veuillez vérifier que votre terminal est à jour :
+sudo apt update
+
+Veuillez installer la commande qui permettra d'utiliser le makefile afin de compiler correctement les programmes C.
+- sudo apt install make
 
 De plus afin de permettre la rotation d'image, veuillez installer graphicsmagick via la commande suivante (si ce n'est pas déja fait) :
 - sudo apt install graphicsmagick-imagemagick-compat
