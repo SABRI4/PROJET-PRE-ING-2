@@ -10,7 +10,7 @@ Vous êtes le gérant d'une société nationale de transport routier, et vous ch
 - **progc/ :** Dossier contenant les programmes C, son makefile, et l'exécutable.
 - **demo/ :** Dossier où seront des exemples d’exécution de notre application.
 - **cytruck.sh :** Script Shell principal situé à la racine du projet.
-- **data/ :** Dossier ou se trouve le fichier data.csv et les données générées par le gnuplot
+- **data/ :** Dossier ou se trouve le fichier data.csv et les données générées par les différentes options
 ## Utilisation du Script Shell
 
 
