@@ -26,6 +26,10 @@ if [ ! -s data/option-s.dat ]; then
     echo "Erreur : Le fichier de données est vide ou n'existe pas."
     exit 2
 fi
+exec_timeend_l=$(date +%s.%N)
+exec_timetotal_l=$(echo "$exec_timeend_l - $exec_timestart_l" | bc)
+
+echo "Temps d'exécution total du script : $exec_timetotal_l secondes"
 
 # Script Gnuplot
 gnuplot -persist <<-EOF
