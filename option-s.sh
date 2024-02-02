@@ -10,7 +10,7 @@ lines=$(wc -l < "$2")
 cd progc
 make $1
 
-
+exec_timestart_l=$(date +%s.%N)
 # Exécution de l'exécutable pour traiter le fichier CSV et création de temp.dat
 ./opts $lines ../$2 > ../temp/temp.dat
 
